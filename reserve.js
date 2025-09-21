@@ -774,3 +774,429 @@ document.addEventListener("DOMContentLoaded", () => {
     "+=0.5"
   );
 });
+
+//norm pc
+
+document.addEventListener("DOMContentLoaded", () => {
+  class Kaif {
+    constructor(containerSelector) {
+      this.container = document.querySelector(containerSelector);
+      if (!this.container) return;
+
+      this.faces = this.container.querySelectorAll(".faces_item");
+      this.modals = [];
+      this.buttons = [];
+      this.balls = [];
+      this.ballData = [];
+
+      // Збираємо всі кульки та тултіпи з faces_item
+      this.faces.forEach((face) => {
+        const button = face.querySelector(".faces_item-contain");
+        const modal = face.querySelector(".faces_item-tooltip_wrp");
+        if (button && modal) {
+          this.buttons.push(button);
+          this.modals.push(modal);
+          this.balls.push(button);
+          // Встановлюємо зв'язок між кнопкою і модалкою через data атрибут
+          const modalId =
+            modal.id || `modal_${Math.random().toString(36).substr(2, 9)}`;
+          modal.id = modalId;
+          button.dataset.openModal = modalId;
+        }
+      });
+
+      this.friction = 0.998;
+      this.wallBounce = 0.85;
+      this.minSpeed = 0.167; // зменшено в 3 рази (0.5 / 3)
+      this.maxSpeed = 1.0; // зменшено в 3 рази (3.0 / 3)
+
+      // Перевірка підтримки hover і розміру екрана
+      this.hasHover = window.matchMedia("(hover: hover)").matches;
+      this.isDesktop = window.matchMedia("(min-width: 992px)").matches;
+
+      this.init();
+    }
+
+    init() {
+      // Слухаємо зміни розміру екрана
+      const mediaQuery = window.matchMedia("(min-width: 992px)");
+      mediaQuery.addListener((e) => {
+        this.isDesktop = e.matches;
+        if (!this.isDesktop) {
+          // Якщо екран менше 992px, закриваємо всі модалки
+          this.closeAllModals();
+        }
+      });
+
+      this.updateContainerSize();
+      window.addEventListener("resize", this.updateContainerSize.bind(this));
+      this.balls.forEach((ball) => this.setupBall(ball));
+      this.buttons.forEach((btn) => {
+        // Завжди додаємо обробник кліку
+        btn.addEventListener("click", () => this.handleClick(btn));
+        // Додаємо обробники hover тільки якщо пристрій підтримує hover і екран > 991px
+        if (this.hasHover) {
+          btn.addEventListener("mouseenter", () => this.handleHover(btn));
+          btn.addEventListener("mouseleave", () => this.handleHoverLeave(btn));
+        }
+      });
+      document.addEventListener("click", (e) => this.closeOnOutsideClick(e));
+      document.addEventListener("keydown", (e) => this.closeOnEscape(e));
+      this.update();
+    }
+
+    updateContainerSize() {
+      this.containerRect = this.container.getBoundingClientRect();
+      this.vw = this.containerRect.width;
+      this.vh = this.containerRect.height;
+    }
+
+    setupBall(ball) {
+      const radius = ball.offsetWidth / 2;
+      const x = Math.random() * (this.vw - radius * 2) + radius;
+      const y = Math.random() * (this.vh - radius * 2) + radius;
+      gsap.set(ball, { xPercent: -50, yPercent: -50, x, y });
+
+      const data = {
+        el: ball,
+        radius,
+        get x() {
+          return gsap.getProperty(ball, "x");
+        },
+        get y() {
+          return gsap.getProperty(ball, "y");
+        },
+        vx: (Math.random() - 0.5) * 0.667, // зменшено в 3 рази (2 / 3)
+        vy: (Math.random() - 0.5) * 0.667, // зменшено в 3 рази (2 / 3)
+        isHovered: false,
+        savedVx: 0,
+        savedVy: 0,
+      };
+
+      ball._ballData = data;
+      this.ballData.push(data);
+    }
+
+    maintainMovement(ball) {
+      const currentSpeed = Math.sqrt(ball.vx ** 2 + ball.vy ** 2);
+      if (currentSpeed < this.minSpeed) {
+        const angle =
+          Math.atan2(ball.vy, ball.vx) + (Math.random() - 0.5) * 0.5;
+        ball.vx = Math.cos(angle) * this.minSpeed;
+        ball.vy = Math.sin(angle) * this.minSpeed;
+      }
+      if (currentSpeed > this.maxSpeed) {
+        ball.vx = (ball.vx / currentSpeed) * this.maxSpeed;
+        ball.vy = (ball.vy / currentSpeed) * this.maxSpeed;
+      }
+    }
+
+    handleCollisions() {
+      for (let i = 0; i < this.ballData.length; i++) {
+        const ball1 = this.ballData[i];
+        for (let j = i + 1; j < this.ballData.length; j++) {
+          const ball2 = this.ballData[j];
+          const dx = ball2.x - ball1.x;
+          const dy = ball2.y - ball1.y;
+          const dist = Math.sqrt(dx ** 2 + dy ** 2);
+          const minDist = ball1.radius + ball2.radius;
+
+          if (dist < minDist && dist > 0) {
+            const angle = Math.atan2(dy, dx);
+            const overlap = minDist - dist;
+            const sepX = Math.cos(angle) * overlap * 0.5;
+            const sepY = Math.sin(angle) * overlap * 0.5;
+
+            if (!ball1.isHovered)
+              gsap.set(ball1.el, { x: ball1.x - sepX, y: ball1.y - sepY });
+            if (!ball2.isHovered)
+              gsap.set(ball2.el, { x: ball2.x + sepX, y: ball2.y + sepY });
+
+            const normalX = dx / dist;
+            const normalY = dy / dist;
+            const relVX = ball2.vx - ball1.vx;
+            const relVY = ball2.vy - ball1.vy;
+            const velAlongNormal = relVX * normalX + relVY * normalY;
+
+            if (velAlongNormal > 0) continue;
+
+            const restitution = 0.9;
+            const impulse = (2 * velAlongNormal * restitution) / 2;
+            const impulseX = impulse * normalX;
+            const impulseY = impulse * normalY;
+
+            if (!ball1.isHovered) {
+              ball1.vx += impulseX;
+              ball1.vy += impulseY;
+            }
+            if (!ball2.isHovered) {
+              ball2.vx -= impulseX;
+              ball2.vy -= impulseY;
+            }
+          }
+        }
+      }
+    }
+
+    update() {
+      this.ballData.forEach((ball) => {
+        if (!ball.isHovered) {
+          ball.vx *= this.friction;
+          ball.vy *= this.friction;
+          this.maintainMovement(ball);
+
+          let newX = ball.x + ball.vx;
+          let newY = ball.y + ball.vy;
+
+          if (newX - ball.radius <= 0) {
+            newX = ball.radius;
+            ball.vx = Math.abs(ball.vx) * this.wallBounce;
+          } else if (newX + ball.radius >= this.vw) {
+            newX = this.vw - ball.radius;
+            ball.vx = -Math.abs(ball.vx) * this.wallBounce;
+          }
+
+          if (newY - ball.radius <= 0) {
+            newY = ball.radius;
+            ball.vy = Math.abs(ball.vy) * this.wallBounce;
+          } else if (newY + ball.radius >= this.vh) {
+            newY = this.vh - ball.radius;
+            ball.vy = -Math.abs(ball.vy) * this.wallBounce;
+          }
+
+          gsap.set(ball.el, { x: newX, y: newY });
+        }
+      });
+
+      this.handleCollisions();
+      requestAnimationFrame(this.update.bind(this));
+    }
+
+    restartBallMovement(ballEl) {
+      const data = ballEl._ballData;
+      if (data) {
+        const angle = Math.random() * Math.PI * 2;
+        data.vx = Math.cos(angle) * (this.minSpeed + Math.random() * 0.333); // зменшено в 3 рази (1 / 3)
+        data.vy = Math.sin(angle) * (this.minSpeed + Math.random() * 0.333); // зменшено в 3 рази (1 / 3)
+      }
+    }
+
+    positionModal(modal, refEl) {
+      modal.style.position = "absolute";
+      modal.style.margin = "0";
+      modal.style.display = "block";
+
+      FloatingUIDOM.computePosition(refEl, modal, {
+        placement: "bottom-end", // права-знизу за замовчуванням
+        middleware: [
+          FloatingUIDOM.offset(10),
+          FloatingUIDOM.shift({ padding: 8, rootBoundary: "document" }),
+        ],
+      })
+        .then(({ x, y }) => {
+          modal.style.left = `${x}px`;
+          modal.style.top = `${y}px`;
+        })
+        .catch(console.error);
+    }
+
+    // Анімація іконки
+    animateIcon(btn, rotate = true) {
+      const icon = btn.querySelector(".btn-face-item_icon");
+      if (icon) {
+        gsap.to(icon, {
+          rotation: rotate ? 45 : 0,
+          duration: 0.3,
+          ease: "power2.out",
+        });
+      }
+    }
+
+    handleHover(btn) {
+      // Перевіряємо чи працюємо на великому екрані
+      if (!this.isDesktop) return;
+
+      // Анімуємо іконку
+      this.animateIcon(btn, true);
+
+      // Зупиняємо рух кульки
+      const data = btn._ballData;
+      if (data) {
+        data.isHovered = true;
+        // Зберігаємо поточну швидкість
+        data.savedVx = data.vx;
+        data.savedVy = data.vy;
+        // Зупиняємо рух
+        data.vx = 0;
+        data.vy = 0;
+      }
+
+      // Затримка для hover
+      clearTimeout(btn._hoverTimeout);
+      btn._hoverTimeout = setTimeout(() => {
+        this.openModal(btn);
+      }, 150);
+    }
+
+    handleHoverLeave(btn) {
+      // Перевіряємо чи працюємо на великому екрані
+      if (!this.isDesktop) return;
+
+      // Анімуємо іконку назад
+      this.animateIcon(btn, false);
+
+      // Відновлюємо рух кульки
+      const data = btn._ballData;
+      if (data && data.isHovered) {
+        data.isHovered = false;
+        // Відновлюємо збережену швидкість або генеруємо нову
+        if (data.savedVx !== undefined && data.savedVy !== undefined) {
+          data.vx = data.savedVx;
+          data.vy = data.savedVy;
+        } else {
+          const angle = Math.random() * Math.PI * 2;
+          data.vx = Math.cos(angle) * this.minSpeed;
+          data.vy = Math.sin(angle) * this.minSpeed;
+        }
+      }
+
+      // Скасовуємо відкриття якщо миша покинула елемент
+      clearTimeout(btn._hoverTimeout);
+
+      // Додаємо затримку перед закриттям
+      const buttonTarget = btn.dataset.openModal;
+      const modal = document.getElementById(buttonTarget);
+      if (modal && modal.style.display === "block") {
+        clearTimeout(btn._closeTimeout);
+        btn._closeTimeout = setTimeout(() => {
+          if (!modal.matches(":hover") && !btn.matches(":hover")) {
+            this.closeModal(modal, btn);
+          }
+        }, 300);
+      }
+    }
+
+    handleClick(btn) {
+      // Перевіряємо чи працюємо на великому екрані
+      if (!this.isDesktop) return;
+
+      this.openModal(btn);
+    }
+
+    openModal(btn) {
+      // Перевіряємо чи працюємо на великому екрані
+      if (!this.isDesktop) return;
+
+      const buttonTarget = btn.dataset.openModal;
+      const targetModal = document.getElementById(buttonTarget);
+
+      if (!targetModal) return;
+
+      // Перевіряємо чи вже відкрита ця модалка
+      if (targetModal.style.display === "block") return;
+
+      this.buttons.forEach((b) => b.classList.remove("is--active-cirlce"));
+      btn.classList.add("is--active-cirlce");
+      btn.style.zIndex = 30;
+
+      // Закриваємо всі інші модалки
+      this.modals.forEach((modal) => {
+        if (modal !== targetModal) {
+          modal.style.display = "none";
+        }
+      });
+
+      // Відкриваємо цільову модалку
+      const updatePosition = () => {
+        if (targetModal.style.display === "block") {
+          this.positionModal(targetModal, btn);
+        }
+      };
+
+      targetModal.style.opacity = "0";
+      targetModal.style.display = "block";
+      targetModal.style.zIndex = 70; // Встановлюємо z-index для активного тултіпа
+
+      // Додаємо обробники hover для модалки (якщо підтримується hover)
+      if (this.hasHover) {
+        targetModal.addEventListener("mouseenter", () => {
+          clearTimeout(btn._closeTimeout);
+        });
+        targetModal.addEventListener("mouseleave", () => {
+          clearTimeout(btn._closeTimeout);
+          btn._closeTimeout = setTimeout(() => {
+            if (!targetModal.matches(":hover") && !btn.matches(":hover")) {
+              this.closeModal(targetModal, btn);
+            }
+          }, 300);
+        });
+      }
+
+      this.positionModal(targetModal, btn);
+
+      setTimeout(() => {
+        targetModal.style.opacity = "1";
+        targetModal.style.transition = "opacity 0.2s";
+      }, 150);
+
+      window.addEventListener("resize", updatePosition);
+      window.addEventListener("scroll", updatePosition, true);
+
+      // Зберігаємо посилання на обробники для видалення
+      targetModal._updatePosition = updatePosition;
+    }
+
+    closeModal(modal, btn) {
+      modal.style.display = "none";
+      modal.style.zIndex = ""; // Скидаємо z-index при закритті
+      btn.classList.remove("is--active-cirlce");
+
+      // Анімуємо іконку назад при закритті
+      this.animateIcon(btn, false);
+
+      // Видаляємо обробники
+      if (modal._updatePosition) {
+        window.removeEventListener("resize", modal._updatePosition);
+        window.removeEventListener("scroll", modal._updatePosition, true);
+      }
+
+      setTimeout(() => this.restartBallMovement(btn), 100);
+    }
+
+    closeAllModals() {
+      this.modals.forEach((modal, index) => {
+        if (modal.style.display === "block") {
+          this.closeModal(modal, this.buttons[index]);
+        }
+      });
+    }
+
+    closeOnOutsideClick(e) {
+      if (!this.isDesktop) return;
+
+      this.modals.forEach((modal, index) => {
+        if (
+          modal.style.display === "block" &&
+          !modal.contains(e.target) &&
+          !this.buttons[index].contains(e.target)
+        ) {
+          this.closeModal(modal, this.buttons[index]);
+        }
+      });
+    }
+
+    closeOnEscape(e) {
+      if (!this.isDesktop) return;
+
+      if (e.key === "Escape") {
+        this.modals.forEach((modal, index) => {
+          if (modal.style.display === "block") {
+            this.closeModal(modal, this.buttons[index]);
+          }
+        });
+      }
+    }
+  }
+
+  new Kaif(".faces_block-space");
+});
