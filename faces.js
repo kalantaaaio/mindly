@@ -163,15 +163,12 @@ document.addEventListener("DOMContentLoaded", () => {
         };
       });
 
-      // Для мобільних екранів - FLIP анімації з переміщенням тултіпів + Swiper
+      // Для мобільних екранів - FLIP анімації з переміщенням тултіпів
       this.mm.add("(max-width: 991.98px)", () => {
         console.log("Mobile mode activated");
 
         // Закриваємо всі desktop модалки
         this.closeAllModals();
-
-        // Ініціалізуємо Swiper
-        this.initializeSwiper();
 
         // Додаємо мобільні обробники кліку
         this.buttons.forEach((btn) => {
@@ -193,9 +190,6 @@ document.addEventListener("DOMContentLoaded", () => {
         // Cleanup function для мобільного режиму
         return () => {
           console.log("Mobile mode deactivated");
-
-          // Знищуємо Swiper
-          this.destroySwiper();
 
           // Закриваємо всі мобільні модалки
           this.closeAllMobileModals();
@@ -842,57 +836,8 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
 
-    // Ініціалізація Swiper для мобільних екранів
-    initializeSwiper() {
-      if (this.swiper) {
-        this.destroySwiper();
-      }
-
-      const swiperContainer = this.container.querySelector('.swiper.faces_block-space');
-      if (!swiperContainer) {
-        console.warn('Swiper container not found: .swiper.faces_block-space');
-        return;
-      }
-
-      this.swiper = new Swiper(swiperContainer, {
-        slidesPerView: 'auto',
-        spaceBetween: 16,
-        centeredSlides: false,
-        freeMode: true,
-        grabCursor: true,
-        breakpoints: {
-          320: {
-            slidesPerView: 'auto',
-            spaceBetween: 12,
-          },
-          480: {
-            slidesPerView: 'auto',
-            spaceBetween: 16,
-          },
-          768: {
-            slidesPerView: 'auto',
-            spaceBetween: 20,
-          }
-        }
-      });
-
-      console.log('Swiper initialized for mobile');
-    }
-
-    // Знищення Swiper
-    destroySwiper() {
-      if (this.swiper) {
-        this.swiper.destroy(true, true);
-        this.swiper = null;
-        console.log('Swiper destroyed');
-      }
-    }
-
     // Метод для очищення при знищенні екземпляра
     destroy() {
-      // Знищуємо Swiper
-      this.destroySwiper();
-
       // Очищуємо GSAP MatchMedia
       this.mm.kill();
 
