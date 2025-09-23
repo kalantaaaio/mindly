@@ -50,6 +50,8 @@ document.addEventListener("DOMContentLoaded", () => {
       this.buttons = [];
       this.balls = [];
       this.ballData = [];
+      this.animationRunning = false;
+      this.animationFrame = null;
 
       // Збираємо всі кульки та тултіпи з faces_item
       this.faces.forEach((face) => {
@@ -87,9 +89,6 @@ document.addEventListener("DOMContentLoaded", () => {
       window.addEventListener("resize", this.updateContainerSize.bind(this));
       this.balls.forEach((ball) => this.setupBall(ball));
 
-      // Завжди запускаємо анімацію руху куль
-      this.update();
-
       // Налаштовуємо responsive поведінку через GSAP MatchMedia
       this.setupResponsive();
     }
@@ -98,6 +97,10 @@ document.addEventListener("DOMContentLoaded", () => {
       // Для екранів 992px і більше - повна функціональність з тултіпами
       this.mm.add("(min-width: 992px)", () => {
         console.log("Desktop mode activated");
+
+        // Запускаємо анімацію руху куль тільки для desktop
+        this.animationRunning = true;
+        this.update();
 
         // Додаємо обробники подій для desktop
         this.buttons.forEach((btn) => {
@@ -132,6 +135,9 @@ document.addEventListener("DOMContentLoaded", () => {
         // Cleanup function для desktop режиму
         return () => {
           console.log("Desktop mode deactivated");
+
+          // Зупиняємо анімацію
+          this.stopAnimation();
 
           // Закриваємо всі модалки при переході на мобільний
           this.closeAllModals();
@@ -381,6 +387,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     update() {
+      if (!this.animationRunning) return;
+
       this.ballData.forEach((ball) => {
         if (!ball.isHovered) {
           // Застосовуємо тертя
@@ -419,7 +427,15 @@ document.addEventListener("DOMContentLoaded", () => {
       });
 
       this.handleCollisions();
-      requestAnimationFrame(this.update.bind(this));
+      this.animationFrame = requestAnimationFrame(this.update.bind(this));
+    }
+
+    stopAnimation() {
+      this.animationRunning = false;
+      if (this.animationFrame) {
+        cancelAnimationFrame(this.animationFrame);
+        this.animationFrame = null;
+      }
     }
 
     restartBallMovement(ballEl) {
