@@ -869,3 +869,141 @@ document.addEventListener("DOMContentLoaded", () => {
   // Створюємо екземпляр класу
   window.kaifInstance = new Kaif(".faces_block-space");
 });
+
+document.addEventListener("DOMContentLoaded", () => {
+  let facesSwiper = null;
+
+  function initFacesSwiper() {
+    if (window.innerWidth < 992 && !facesSwiper) {
+      facesSwiper = new Swiper(".swiper.is--faces", {
+        slidesPerView: "auto",
+        spaceBetween: "5%",
+        centeredSlides: true,
+      });
+      console.log("Faces Swiper initialized");
+    }
+  }
+
+  function destroyFacesSwiper() {
+    if (facesSwiper) {
+      facesSwiper.destroy(true, true);
+      facesSwiper = null;
+      console.log("Faces Swiper destroyed");
+    }
+  }
+
+  function handleResize() {
+    if (window.innerWidth < 992) {
+      initFacesSwiper();
+    } else {
+      destroyFacesSwiper();
+    }
+  }
+
+  // Ініціалізуємо при завантаженні
+  handleResize();
+
+  // Слідкуємо за зміною розміру екрану
+  window.addEventListener("resize", handleResize);
+});
+
+//slider faces_item tooltips animation (без FLIP)
+document.addEventListener("DOMContentLoaded", () => {
+  const sliderFaceButtons = document.querySelectorAll(".swiper.is--faces .btn-face-item");
+
+  sliderFaceButtons.forEach((btn) => {
+    const tooltip = btn.closest(".faces_item").querySelector(".faces_item-tooltip_wrp");
+
+    if (tooltip) {
+      // Ініціалізуємо tooltip як прихований
+      gsap.set(tooltip, {
+        opacity: 0,
+        scale: 0.8,
+        y: 20,
+        display: "none"
+      });
+
+      btn.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        // Перевіряємо чи tooltip вже відкритий
+        const isOpen = tooltip.style.display === "block";
+
+        if (isOpen) {
+          // Закриваємо tooltip
+          gsap.to(tooltip, {
+            opacity: 0,
+            scale: 0.8,
+            y: 20,
+            duration: 0.3,
+            ease: "power2.in",
+            onComplete: () => {
+              tooltip.style.display = "none";
+              btn.classList.remove("is--active");
+            }
+          });
+        } else {
+          // Закриваємо всі інші tooltips в слайдері
+          sliderFaceButtons.forEach((otherBtn) => {
+            const otherTooltip = otherBtn.closest(".faces_item").querySelector(".faces_item-tooltip_wrp");
+            if (otherTooltip && otherTooltip !== tooltip && otherTooltip.style.display === "block") {
+              gsap.to(otherTooltip, {
+                opacity: 0,
+                scale: 0.8,
+                y: 20,
+                duration: 0.2,
+                ease: "power2.in",
+                onComplete: () => {
+                  otherTooltip.style.display = "none";
+                  otherBtn.classList.remove("is--active");
+                }
+              });
+            }
+          });
+
+          // Відкриваємо поточний tooltip
+          tooltip.style.display = "block";
+          btn.classList.add("is--active");
+
+          gsap.fromTo(tooltip,
+            {
+              opacity: 0,
+              scale: 0.8,
+              y: 20
+            },
+            {
+              opacity: 1,
+              scale: 1,
+              y: 0,
+              duration: 0.4,
+              ease: "back.out(1.7)"
+            }
+          );
+        }
+      });
+    }
+  });
+
+  // Закриття tooltip при кліку поза слайдером
+  document.addEventListener("click", (e) => {
+    if (!e.target.closest(".swiper.is--faces")) {
+      sliderFaceButtons.forEach((btn) => {
+        const tooltip = btn.closest(".faces_item").querySelector(".faces_item-tooltip_wrp");
+        if (tooltip && tooltip.style.display === "block") {
+          gsap.to(tooltip, {
+            opacity: 0,
+            scale: 0.8,
+            y: 20,
+            duration: 0.3,
+            ease: "power2.in",
+            onComplete: () => {
+              tooltip.style.display = "none";
+              btn.classList.remove("is--active");
+            }
+          });
+        }
+      });
+    }
+  });
+});
