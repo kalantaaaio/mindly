@@ -1200,3 +1200,1623 @@ document.addEventListener("DOMContentLoaded", () => {
 
   new Kaif(".faces_block-space");
 });
+
+// first card of second setion
+document.addEventListener("DOMContentLoaded", () => {
+  const firstCard = document.querySelectorAll(".commitment_card")[0];
+  const toggle = firstCard.querySelector(".commitment_card-drop");
+  const cardsHeightCfg = ["16.25rem", "14.31rem", "16.25rem"];
+  const tableCards = firstCard.querySelectorAll(".commitment_drop-table-card");
+  const cardHead = firstCard.querySelector("h3");
+  const cardP = firstCard.querySelector("p");
+  const cardBtm = firstCard.querySelector(".commitment_drop-table-text");
+  const nums = firstCard.querySelectorAll(".num-anim");
+
+  // Змінна для відстеження чи анімація вже була запущена
+  let animationPlayed = false;
+
+  // Створюємо matchMedia
+  let mm = gsap.matchMedia();
+
+  // Функція створення timeline анімації для десктопа
+  function createDesktopAnimationTimeline() {
+    // Встановлюємо початкові стани
+    gsap.set(cardHead, { opacity: 0, y: 20 });
+    gsap.set(cardP, { opacity: 0, y: 20 });
+    gsap.set(cardBtm, { opacity: 0, y: 20 });
+
+    // Створюємо timeline
+    let firstCardTl = gsap.timeline({ paused: true });
+
+    firstCardTl.to(cardHead, { opacity: 1, y: 0, duration: 0.5 });
+    firstCardTl.to(cardP, { opacity: 1, y: 0, duration: 0.5 }, "-=0.2");
+    firstCardTl.to(cardBtm, { opacity: 1, y: 0, duration: 0.5 }, 0.5);
+
+    // Анімація карток
+    tableCards.forEach((k, i) => {
+      firstCardTl.to(
+        k,
+        {
+          height: cardsHeightCfg[i],
+          duration: 0.5,
+        },
+        0.3
+      );
+    });
+
+    // Анімація цілих чисел
+    nums.forEach((numEl) => {
+      const targetValue = parseInt(numEl.getAttribute("data-num"));
+      firstCardTl.to(
+        { value: 0 },
+        {
+          value: targetValue,
+          duration: 1.0,
+          ease: "power1.in",
+          onUpdate: function () {
+            numEl.textContent = Math.floor(this.targets()[0].value);
+          },
+        },
+        0.1
+      );
+    });
+
+    return firstCardTl;
+  }
+
+  // Функція створення timeline анімації для мобільних
+  function createMobileAnimationTimeline() {
+    // Створюємо timeline
+    let firstCardTl = gsap.timeline({ paused: true });
+
+    // Анімація цілих чисел
+    nums.forEach((numEl) => {
+      const targetValue = parseInt(numEl.getAttribute("data-num"));
+      firstCardTl.to(
+        { value: 0 },
+        {
+          value: targetValue,
+          duration: 1.0,
+          ease: "power1.in",
+          onUpdate: function () {
+            numEl.textContent = Math.floor(this.targets()[0].value);
+          },
+        },
+        0.1
+      );
+    });
+
+    return firstCardTl;
+  }
+
+  // Медіа-запит для екранів більше 991px (анімація по скроллу)
+  mm.add("(min-width: 992px)", () => {
+    console.log("🟢 Запуск анімації - екран більше 991px");
+
+    const firstCardTl = createDesktopAnimationTimeline();
+
+    // Створюємо ScrollTrigger
+    ScrollTrigger.create({
+      trigger: firstCard,
+      start: "top 70%",
+      end: "bottom top",
+      onEnter: () => {
+        console.log("🔵 ScrollTrigger onEnter");
+        firstCardTl.play();
+        animationPlayed = true;
+      },
+    });
+
+    // Cleanup функція
+    return () => {
+      console.log("🔴 Cleanup - вимкнення анімації для екранів менше 992px");
+
+      // Скидаємо всі GSAP стилі
+      gsap.set([cardHead, cardP, cardBtm], { clearProps: "all" });
+      tableCards.forEach((card) => {
+        gsap.set(card, { clearProps: "all" });
+      });
+
+      // Повертаємо числа до початкових значень
+      nums.forEach((numEl) => {
+        const targetValue = parseInt(numEl.getAttribute("data-num"));
+        numEl.textContent = targetValue;
+      });
+    };
+  });
+
+  // Медіа-запит для екранів менше 992px (анімація по кліку)
+  mm.add("(max-width: 991px)", () => {
+    console.log("🟡 Запуск анімації - екран менше 992px");
+
+    const firstCardTl = createMobileAnimationTimeline();
+
+    // Обробник кліку на toggle
+    const handleToggleClick = () => {
+      if (!animationPlayed) {
+        console.log("🔵 Toggle click - запуск анімації з затримкою");
+        // Запускаємо анімацію з затримкою 0.4с
+        setTimeout(() => {
+          firstCardTl.play();
+          animationPlayed = true;
+        }, 400);
+      }
+    };
+
+    toggle.addEventListener("click", handleToggleClick);
+
+    // Cleanup функція
+    return () => {
+      console.log("🔴 Cleanup - вимкнення анімації для екранів більше 992px");
+      toggle.removeEventListener("click", handleToggleClick);
+
+      // Скидаємо всі GSAP стилі
+      gsap.set([cardBtm], { clearProps: "all" });
+      tableCards.forEach((card) => {
+        gsap.set(card, { clearProps: "all" });
+      });
+
+      // Повертаємо числа до початкових значень
+      nums.forEach((numEl) => {
+        const targetValue = parseInt(numEl.getAttribute("data-num"));
+        numEl.textContent = targetValue;
+      });
+    };
+  });
+});
+
+// second card animation
+document.addEventListener("DOMContentLoaded", () => {
+  const secondCard = document.querySelectorAll(".commitment_card")[1];
+  const toggle = secondCard.querySelector(".commitment_card-drop");
+  const blocks = document.querySelectorAll(".commitment_drop-visual-card");
+  const cardHead = secondCard.querySelector("h3");
+  const cardP = secondCard.querySelector("p");
+  const cardBtm = secondCard.querySelector(".commitment_drop-table-text");
+
+  const photos = secondCard.querySelectorAll(".commitment_drop-visual-img");
+  const circles = secondCard.querySelectorAll(
+    "#circle-1, #circle-2, #circle-3"
+  );
+
+  // Змінна для відстеження чи анімація вже була запущена
+  let animationPlayed = false;
+
+  // Створюємо matchMedia
+  let mm = gsap.matchMedia();
+
+  // Функція створення timeline анімації для десктопа
+  function createDesktopAnimationTimeline() {
+    // Встановлюємо початкові стани
+    gsap.set(cardHead, { opacity: 0, y: 20 });
+    gsap.set(cardP, { opacity: 0, y: 20 });
+    gsap.set(cardBtm, { opacity: 0, y: 20 });
+    circles.forEach((c) => {
+      gsap.set(c, { drawSVG: "0%" });
+    });
+    photos.forEach((p) => {
+      gsap.set(p, { opacity: 0, scale: 0.6 });
+    });
+    blocks.forEach((b) => {
+      gsap.set(b, { opacity: 0 });
+    });
+
+    // Створюємо timeline
+    let secondCardTl = gsap.timeline({ paused: true });
+
+    // Timeline анімації
+    blocks.forEach((b) => {
+      secondCardTl.to(b, { opacity: 1, duration: 0.3 }, 0);
+    });
+    secondCardTl.to(cardHead, { opacity: 1, y: 0, duration: 0.5 }, 0);
+    secondCardTl.to(cardP, { opacity: 1, y: 0, duration: 0.5 }, "-=0.2");
+    secondCardTl.to(cardBtm, { opacity: 1, y: 0, duration: 0.5 }, 0.5);
+
+    secondCardTl.fromTo(
+      circles[0],
+      { drawSVG: "0%" },
+      { drawSVG: "100%", duration: 0.5 },
+      0
+    );
+    secondCardTl.fromTo(
+      "#icon-1",
+      { scale: 1 },
+      {
+        scale: 1.2,
+        duration: 0.1,
+        ease: "power2.out",
+        yoyo: true,
+        repeat: 1,
+      },
+      "-=0.2"
+    );
+    secondCardTl.fromTo(
+      circles[1],
+      { drawSVG: "0% 0%" },
+      { drawSVG: "0% 50%", duration: 0.5 }
+    );
+    secondCardTl.fromTo(
+      "#icon-2",
+      { scale: 1 },
+      {
+        scale: 1.2,
+        duration: 0.1,
+        ease: "power2.out",
+        yoyo: true,
+        repeat: 1,
+      },
+      "-=0.1"
+    );
+    secondCardTl.fromTo(
+      circles[2],
+      { drawSVG: "50% 50%" },
+      { drawSVG: "50% 150%", duration: 0.5 }
+    );
+    secondCardTl.fromTo(
+      "#icon-2",
+      { scale: 1 },
+      {
+        scale: 1.2,
+        duration: 0.1,
+        ease: "power2.out",
+        yoyo: true,
+        repeat: 1,
+      },
+      "-=0.1"
+    );
+    secondCardTl.to(circles[1], { drawSVG: "100%", duration: 0.5 });
+
+    secondCardTl.fromTo(
+      "#icon-1",
+      { scale: 1 },
+      {
+        scale: 1.2,
+        duration: 0.1,
+        ease: "power2.out",
+        yoyo: true,
+        repeat: 1,
+      },
+      "-=0.1"
+    );
+
+    secondCardTl.to(photos[0], { opacity: 1, scale: 1, duration: 0.3 }, 0.15);
+    secondCardTl.to(photos[1], { opacity: 1, scale: 1, duration: 0.3 }, 1.2);
+    secondCardTl.to(photos[2], { opacity: 1, scale: 1, duration: 0.3 }, 1.8);
+
+    return secondCardTl;
+  }
+
+  // Функція створення timeline анімації для мобільних
+  function createMobileAnimationTimeline() {
+    // Встановлюємо початкові стани (БЕЗ cardHead і cardP)
+    gsap.set(cardBtm, { opacity: 0, y: 20 });
+    circles.forEach((c) => {
+      gsap.set(c, { drawSVG: "0%" });
+    });
+    photos.forEach((p) => {
+      gsap.set(p, { opacity: 0, scale: 0.6 });
+    });
+    blocks.forEach((b) => {
+      gsap.set(b, { opacity: 0 });
+    });
+
+    // Створюємо timeline
+    let secondCardTl = gsap.timeline({ paused: true });
+
+    // Timeline анімації (БЕЗ cardHead і cardP)
+    blocks.forEach((b) => {
+      secondCardTl.to(b, { opacity: 1, duration: 0.3 }, 0);
+    });
+    secondCardTl.to(cardBtm, { opacity: 1, y: 0, duration: 0.5 }, 0);
+
+    secondCardTl.fromTo(
+      circles[0],
+      { drawSVG: "0%" },
+      { drawSVG: "100%", duration: 0.5 },
+      0
+    );
+    secondCardTl.fromTo(
+      "#icon-1",
+      { scale: 1 },
+      {
+        scale: 1.2,
+        duration: 0.1,
+        ease: "power2.out",
+        yoyo: true,
+        repeat: 1,
+      },
+      "-=0.2"
+    );
+    secondCardTl.fromTo(
+      circles[1],
+      { drawSVG: "0% 0%" },
+      { drawSVG: "0% 50%", duration: 0.5 }
+    );
+    secondCardTl.fromTo(
+      "#icon-2",
+      { scale: 1 },
+      {
+        scale: 1.2,
+        duration: 0.1,
+        ease: "power2.out",
+        yoyo: true,
+        repeat: 1,
+      },
+      "-=0.1"
+    );
+    secondCardTl.fromTo(
+      circles[2],
+      { drawSVG: "50% 50%" },
+      { drawSVG: "50% 150%", duration: 0.5 }
+    );
+    secondCardTl.fromTo(
+      "#icon-2",
+      { scale: 1 },
+      {
+        scale: 1.2,
+        duration: 0.1,
+        ease: "power2.out",
+        yoyo: true,
+        repeat: 1,
+      },
+      "-=0.1"
+    );
+    secondCardTl.to(circles[1], { drawSVG: "100%", duration: 0.5 });
+
+    secondCardTl.fromTo(
+      "#icon-1",
+      { scale: 1 },
+      {
+        scale: 1.2,
+        duration: 0.1,
+        ease: "power2.out",
+        yoyo: true,
+        repeat: 1,
+      },
+      "-=0.1"
+    );
+
+    secondCardTl.to(photos[0], { opacity: 1, scale: 1, duration: 0.3 }, 0.15);
+    secondCardTl.to(photos[1], { opacity: 1, scale: 1, duration: 0.3 }, 1.2);
+    secondCardTl.to(photos[2], { opacity: 1, scale: 1, duration: 0.3 }, 2);
+
+    return secondCardTl;
+  }
+
+  // Медіа-запит для екранів більше 991px (анімація по скроллу)
+  mm.add("(min-width: 992px)", () => {
+    console.log("🟢 Запуск анімації - екран більше 991px");
+
+    const secondCardTl = createDesktopAnimationTimeline();
+
+    // Створюємо ScrollTrigger
+    ScrollTrigger.create({
+      trigger: secondCard,
+      start: "top 70%",
+      end: "bottom top",
+      onEnter: () => {
+        console.log("🔵 ScrollTrigger onEnter");
+        secondCardTl.play();
+        animationPlayed = true;
+      },
+    });
+
+    // Cleanup функція
+    return () => {
+      console.log("🔴 Cleanup - вимкнення анімації для екранів менше 992px");
+      gsap.set([cardHead, cardP, cardBtm, ...blocks, ...photos, ...circles], {
+        clearProps: "all",
+      });
+    };
+  });
+
+  // Медіа-запит для екранів менше 992px (анімація по кліку)
+  mm.add("(max-width: 991px)", () => {
+    console.log("🟡 Запуск анімації - екран менше 992px");
+
+    const secondCardTl = createMobileAnimationTimeline();
+
+    // Обробник кліку на toggle
+    const handleToggleClick = () => {
+      if (!animationPlayed) {
+        console.log("🔵 Toggle click - запуск анімації з затримкою");
+        // Запускаємо анімацію з затримкою 0.4с
+        setTimeout(() => {
+          secondCardTl.play();
+          animationPlayed = true;
+        }, 400);
+      }
+    };
+
+    toggle.addEventListener("click", handleToggleClick);
+
+    // Cleanup функція
+    return () => {
+      console.log("🔴 Cleanup - вимкнення анімації для екранів більше 992px");
+      toggle.removeEventListener("click", handleToggleClick);
+      gsap.set([cardBtm, ...blocks, ...photos, ...circles], {
+        clearProps: "all",
+      });
+    };
+  });
+});
+
+// third card animation
+document.addEventListener("DOMContentLoaded", () => {
+  const thirdCard = document.querySelectorAll(".commitment_card")[2];
+  const toggle = thirdCard.querySelector(".commitment_card-drop");
+  const cardHead = thirdCard.querySelector("h3");
+  const cardP = thirdCard.querySelector("p");
+  const cardBtm = thirdCard.querySelector(".commitment_drop-table-text");
+
+  const tooltips = thirdCard.querySelectorAll(".commitment_drop-lock-tooltip");
+  const lock = thirdCard.querySelector(".commitment_drop-lock-img");
+
+  // Змінна для відстеження чи анімація вже була запущена
+  let animationPlayed = false;
+
+  // Створюємо matchMedia
+  let mm = gsap.matchMedia();
+
+  // Функція створення timeline анімації для десктопа
+  function createDesktopAnimationTimeline() {
+    // Встановлюємо початкові стани
+    gsap.set(cardHead, { opacity: 0, y: 20 });
+    gsap.set(cardP, { opacity: 0, y: 20 });
+    gsap.set(cardBtm, { opacity: 0, y: 20 });
+
+    gsap.set(lock, { opacity: 0, y: 20 });
+    tooltips.forEach((t) => {
+      gsap.set(t, { opacity: 0 });
+    });
+
+    // Створюємо timeline
+    let thirdCardTl = gsap.timeline({ paused: true });
+
+    // Timeline анімації
+    thirdCardTl.to(cardHead, { opacity: 1, y: 0, duration: 0.5 }, 0);
+    thirdCardTl.to(cardP, { opacity: 1, y: 0, duration: 0.5 }, "-=0.2");
+    thirdCardTl.to(cardBtm, { opacity: 1, y: 0, duration: 0.5 }, 0.5);
+
+    thirdCardTl.to(lock, { opacity: 1, y: 0, duration: 0.5 }, 0);
+    thirdCardTl.to(tooltips[0], { opacity: 1, rotate: 0, duration: 0.5 }, 0.3);
+    thirdCardTl.to(tooltips[1], { opacity: 1, rotate: 0, duration: 0.5 }, 0.5);
+    thirdCardTl.to(tooltips[2], { opacity: 1, rotate: 0, duration: 0.5 }, 0.7);
+    thirdCardTl.fromTo(
+      lock,
+      { scale: 1 },
+      {
+        scale: 1.1,
+        duration: 0.1,
+        ease: "power2.out",
+        yoyo: true,
+        repeat: 1,
+      },
+      "-=0.1"
+    );
+
+    return thirdCardTl;
+  }
+
+  // Функція створення timeline анімації для мобільних
+  function createMobileAnimationTimeline() {
+    // Встановлюємо початкові стани (БЕЗ cardHead і cardP)
+    gsap.set(cardBtm, { opacity: 0, y: 20 });
+
+    gsap.set(lock, { opacity: 0, y: 20 });
+    tooltips.forEach((t) => {
+      gsap.set(t, { opacity: 0 });
+    });
+
+    // Створюємо timeline
+    let thirdCardTl = gsap.timeline({ paused: true });
+
+    // Timeline анімації (БЕЗ cardHead і cardP)
+    thirdCardTl.to(cardBtm, { opacity: 1, y: 0, duration: 0.5 }, 0);
+
+    thirdCardTl.to(lock, { opacity: 1, y: 0, duration: 0.5 }, 0);
+    thirdCardTl.to(tooltips[0], { opacity: 1, rotate: 0, duration: 0.5 }, 0.3);
+    thirdCardTl.to(tooltips[1], { opacity: 1, rotate: 0, duration: 0.5 }, 0.5);
+    thirdCardTl.to(tooltips[3], { opacity: 1, rotate: 0, duration: 0.5 }, 0.7);
+    thirdCardTl.fromTo(
+      lock,
+      { scale: 1 },
+      {
+        scale: 1.1,
+        duration: 0.1,
+        ease: "power2.out",
+        yoyo: true,
+        repeat: 1,
+      },
+      "-=0.1"
+    );
+
+    return thirdCardTl;
+  }
+
+  // Медіа-запит для екранів більше 991px (анімація по скроллу)
+  mm.add("(min-width: 992px)", () => {
+    console.log("🟢 Запуск анімації - екран більше 991px");
+
+    const thirdCardTl = createDesktopAnimationTimeline();
+
+    // Створюємо ScrollTrigger
+    ScrollTrigger.create({
+      trigger: thirdCard,
+      start: "top 70%",
+      end: "bottom top",
+      onEnter: () => {
+        console.log("🔵 ScrollTrigger onEnter");
+        thirdCardTl.play();
+        animationPlayed = true;
+      },
+    });
+
+    // Cleanup функція
+    return () => {
+      console.log("🔴 Cleanup - вимкнення анімації для екранів менше 992px");
+      gsap.set([cardHead, cardP, cardBtm, lock, ...tooltips], {
+        clearProps: "all",
+      });
+    };
+  });
+
+  // Медіа-запит для екранів менше 992px (анімація по кліку)
+  mm.add("(max-width: 991px)", () => {
+    console.log("🟡 Запуск анімації - екран менше 992px");
+
+    const thirdCardTl = createMobileAnimationTimeline();
+
+    // Обробник кліку на toggle
+    const handleToggleClick = () => {
+      if (!animationPlayed) {
+        console.log("🔵 Toggle click - запуск анімації з затримкою");
+        // Запускаємо анімацію з затримкою 0.4с
+        setTimeout(() => {
+          thirdCardTl.play();
+          animationPlayed = true;
+        }, 400);
+      }
+    };
+
+    toggle.addEventListener("click", handleToggleClick);
+
+    // Cleanup функція
+    return () => {
+      console.log("🔴 Cleanup - вимкнення анімації для екранів більше 992px");
+      toggle.removeEventListener("click", handleToggleClick);
+      gsap.set([cardBtm, lock, ...tooltips], { clearProps: "all" });
+    };
+  });
+});
+
+// fourth card animation
+document.addEventListener("DOMContentLoaded", () => {
+  const fourthCard = document.querySelectorAll(".commitment_card")[3];
+  const toggle = fourthCard.querySelector(".commitment_card-drop");
+  const cardHead = fourthCard.querySelector("h3");
+  const cardP = fourthCard.querySelector("p");
+  const tooltips = fourthCard.querySelectorAll(".commitment_drop-tooltip");
+  const arrows = fourthCard.querySelectorAll(".commitment_drop-tooltip-arr");
+  const lines = fourthCard.querySelectorAll(".commitment_drop-tooltip-l");
+  const icon = fourthCard.querySelector("#card-icon-card-4");
+  console.log(icon);
+  const block = fourthCard.querySelector(".commitment_drop-visual-main");
+
+  // Змінна для відстеження чи анімація вже була запущена
+  let animationPlayed = false;
+
+  // Створюємо matchMedia
+  let mm = gsap.matchMedia();
+
+  // Функція створення timeline анімації для десктопа
+  function createDesktopAnimationTimeline() {
+    // Встановлюємо початкові стани
+    gsap.set(cardHead, { opacity: 0, y: 20 });
+    gsap.set(cardP, { opacity: 0, y: 20 });
+    gsap.set(block, { opacity: 0, y: 20 });
+
+    tooltips.forEach((t) => {
+      gsap.set(t, { opacity: 0, y: 10 });
+    });
+    arrows.forEach((a) => {
+      gsap.set(a, { opacity: 0 });
+    });
+    lines.forEach((l) => {
+      gsap.set(l, { drawSVG: "0%" });
+    });
+
+    // Створюємо timeline
+    let fourthCardTl = gsap.timeline({ paused: true });
+
+    // Timeline анімації
+    fourthCardTl.to(cardHead, { opacity: 1, y: 0, duration: 0.5 }, 0);
+    fourthCardTl.to(cardP, { opacity: 1, y: 0, duration: 0.5 }, "-=0.2");
+    fourthCardTl.to(block, { opacity: 1, y: 0, duration: 0.5 }, 0);
+
+    lines.forEach((line, index) => {
+      fourthCardTl.fromTo(
+        line,
+        { drawSVG: "0%" },
+        { drawSVG: "100%", duration: 1 },
+        index * 0.2
+      );
+    });
+
+    arrows.forEach((arr, i) => {
+      fourthCardTl.to(arr, { opacity: 1, duration: 0.3 }, 1 + i * 0.2);
+    });
+
+    tooltips.forEach((t, i) => {
+      fourthCardTl.to(t, { opacity: 1, y: 0, duration: 0.3 }, 1.2 + i * 0.2);
+    });
+
+    fourthCardTl.add(
+      [
+        gsap.fromTo(
+          block,
+          { scale: 1 },
+          {
+            scale: 1.2,
+            duration: 0.15,
+            ease: "power2.out",
+            yoyo: true,
+            repeat: 1,
+          }
+        ),
+        gsap.fromTo(
+          icon,
+          { rotate: 0 },
+          {
+            rotate: 360,
+            duration: 0.3,
+            ease: "power2.out",
+          }
+        ),
+      ],
+      "-=0.5"
+    );
+
+    return fourthCardTl;
+  }
+
+  // Функція створення timeline анімації для мобільних
+  function createMobileAnimationTimeline() {
+    // Встановлюємо початкові стани (БЕЗ cardHead і cardP)
+    gsap.set(block, { opacity: 0, y: 20 });
+
+    tooltips.forEach((t) => {
+      gsap.set(t, { opacity: 0, y: 10 });
+    });
+    arrows.forEach((a) => {
+      gsap.set(a, { opacity: 0 });
+    });
+    lines.forEach((l) => {
+      gsap.set(l, { drawSVG: "0%" });
+    });
+
+    // Створюємо timeline
+    let fourthCardTl = gsap.timeline({ paused: true });
+
+    // Timeline анімації (БЕЗ cardHead і cardP)
+    fourthCardTl.to(block, { opacity: 1, y: 0, duration: 0.5 }, 0);
+
+    lines.forEach((line, index) => {
+      fourthCardTl.fromTo(
+        line,
+        { drawSVG: "0%" },
+        { drawSVG: "100%", duration: 1 },
+        index * 0.2
+      );
+    });
+
+    arrows.forEach((arr, i) => {
+      fourthCardTl.to(arr, { opacity: 1, duration: 0.3 }, 1 + i * 0.2);
+    });
+
+    tooltips.forEach((t, i) => {
+      fourthCardTl.to(t, { opacity: 1, y: 0, duration: 0.3 }, 1.2 + i * 0.2);
+    });
+
+    fourthCardTl.add(
+      [
+        gsap.fromTo(
+          block,
+          { scale: 1 },
+          {
+            scale: 1.2,
+            duration: 0.15,
+            ease: "power2.out",
+            yoyo: true,
+            repeat: 1,
+          }
+        ),
+        gsap.fromTo(
+          icon,
+          { rotate: 0 },
+          {
+            rotate: 360,
+            duration: 0.3,
+            ease: "power2.out",
+          }
+        ),
+      ],
+      "-=0.5"
+    );
+
+    return fourthCardTl;
+  }
+
+  // Медіа-запит для екранів більше 991px (анімація по скроллу)
+  mm.add("(min-width: 992px)", () => {
+    console.log("🟢 Запуск анімації - екран більше 991px");
+
+    const fourthCardTl = createDesktopAnimationTimeline();
+
+    // Створюємо ScrollTrigger
+    ScrollTrigger.create({
+      trigger: fourthCard,
+      start: "top 70%",
+      end: "bottom top",
+      onEnter: () => {
+        console.log("🔵 ScrollTrigger onEnter");
+        fourthCardTl.play();
+        animationPlayed = true;
+      },
+    });
+
+    // Cleanup функція
+    return () => {
+      console.log("🔴 Cleanup - вимкнення анімації для екранів менше 992px");
+      gsap.set([cardHead, cardP, block, ...tooltips, ...arrows, ...lines], {
+        clearProps: "all",
+      });
+    };
+  });
+
+  // Медіа-запит для екранів менше 992px (анімація по кліку)
+  mm.add("(max-width: 991px)", () => {
+    console.log("🟡 Запуск анімації - екран менше 992px");
+
+    const fourthCardTl = createMobileAnimationTimeline();
+
+    // Обробник кліку на toggle
+    const handleToggleClick = () => {
+      if (!animationPlayed) {
+        console.log("🔵 Toggle click - запуск анімації з затримкою");
+        // Запускаємо анімацію з затримкою 0.4с
+        setTimeout(() => {
+          fourthCardTl.play();
+          animationPlayed = true;
+        }, 400);
+      }
+    };
+
+    toggle.addEventListener("click", handleToggleClick);
+
+    // Cleanup функція
+    return () => {
+      console.log("🔴 Cleanup - вимкнення анімації для екранів більше 992px");
+      toggle.removeEventListener("click", handleToggleClick);
+      gsap.set([block, ...tooltips, ...arrows, ...lines], {
+        clearProps: "all",
+      });
+    };
+  });
+});
+
+//moving-faces
+document.addEventListener("DOMContentLoaded", () => {
+  class Kaif {
+    constructor(containerSelector) {
+      this.container = document.querySelector(containerSelector);
+      if (!this.container) return;
+
+      this.faces = this.container.querySelectorAll(".faces_item");
+      this.modals = [];
+      this.buttons = [];
+      this.balls = [];
+      this.ballData = [];
+
+      // Збираємо всі кульки та тултіпи з faces_item
+      this.faces.forEach((face) => {
+        const button = face.querySelector(".faces_item-contain");
+        const modal = face.querySelector(".faces_item-tooltip_wrp");
+        if (button && modal) {
+          this.buttons.push(button);
+          this.modals.push(modal);
+          this.balls.push(button);
+          // Встановлюємо зв'язок між кнопкою і модалкою через data атрибут
+          const modalId =
+            modal.id || `modal_${Math.random().toString(36).substr(2, 9)}`;
+          modal.id = modalId;
+          button.dataset.openModal = modalId;
+        }
+      });
+
+      // Покращені параметри для плавнішого руху
+      this.friction = 0.995; // менше тертя для плавнішого руху
+      this.wallBounce = 0.7; // менший відскок від стін
+      this.minSpeed = 0.16; // збільшено в 2 рази (0.08 * 2)
+      this.maxSpeed = 0.8; // збільшено в 2 рази (0.4 * 2)
+      this.speedVariation = 0.2; // збільшено варіацію швидкості
+      this.avoidanceRadius = 80; // радіус уникнення інших кульок
+      this.avoidanceForce = 0.015; // сила уникнення
+
+      // GSAP MatchMedia для responsive логіки
+      this.mm = gsap.matchMedia();
+
+      this.init();
+    }
+
+    init() {
+      this.updateContainerSize();
+      window.addEventListener("resize", this.updateContainerSize.bind(this));
+      this.balls.forEach((ball) => this.setupBall(ball));
+
+      // Завжди запускаємо анімацію руху куль
+      this.update();
+
+      // Налаштовуємо responsive поведінку через GSAP MatchMedia
+      this.setupResponsive();
+    }
+
+    setupResponsive() {
+      // Для екранів 992px і більше - повна функціональність з тултіпами
+      this.mm.add("(min-width: 992px)", () => {
+        console.log("Desktop mode activated");
+
+        // Додаємо обробники подій для desktop
+        this.buttons.forEach((btn) => {
+          // Завжди додаємо обробник кліку
+          const clickHandler = () => this.handleClick(btn);
+          btn.addEventListener("click", clickHandler);
+
+          // Додаємо обробники hover для desktop
+          const hoverEnterHandler = () => this.handleHover(btn);
+          const hoverLeaveHandler = () => this.handleHoverLeave(btn);
+
+          btn.addEventListener("mouseenter", hoverEnterHandler);
+          btn.addEventListener("mouseleave", hoverLeaveHandler);
+
+          // Зберігаємо посилання на обробники для очищення
+          btn._clickHandler = clickHandler;
+          btn._hoverEnterHandler = hoverEnterHandler;
+          btn._hoverLeaveHandler = hoverLeaveHandler;
+        });
+
+        // Додаємо глобальні обробники
+        const outsideClickHandler = (e) => this.closeOnOutsideClick(e);
+        const escapeHandler = (e) => this.closeOnEscape(e);
+
+        document.addEventListener("click", outsideClickHandler);
+        document.addEventListener("keydown", escapeHandler);
+
+        // Зберігаємо посилання для очищення
+        this._outsideClickHandler = outsideClickHandler;
+        this._escapeHandler = escapeHandler;
+
+        // Cleanup function для desktop режиму
+        return () => {
+          console.log("Desktop mode deactivated");
+
+          // Закриваємо всі модалки при переході на мобільний
+          this.closeAllModals();
+
+          // Видаляємо обробники подій
+          this.buttons.forEach((btn) => {
+            if (btn._clickHandler)
+              btn.removeEventListener("click", btn._clickHandler);
+            if (btn._hoverEnterHandler)
+              btn.removeEventListener("mouseenter", btn._hoverEnterHandler);
+            if (btn._hoverLeaveHandler)
+              btn.removeEventListener("mouseleave", btn._hoverLeaveHandler);
+
+            // Очищуємо посилання
+            btn._clickHandler = null;
+            btn._hoverEnterHandler = null;
+            btn._hoverLeaveHandler = null;
+          });
+
+          // Видаляємо глобальні обробники
+          if (this._outsideClickHandler) {
+            document.removeEventListener("click", this._outsideClickHandler);
+            this._outsideClickHandler = null;
+          }
+          if (this._escapeHandler) {
+            document.removeEventListener("keydown", this._escapeHandler);
+            this._escapeHandler = null;
+          }
+        };
+      });
+
+      // Для мобільних екранів - FLIP анімації з переміщенням тултіпів
+      this.mm.add("(max-width: 991.98px)", () => {
+        console.log("Mobile mode activated");
+
+        // Закриваємо всі desktop модалки
+        this.closeAllModals();
+
+        // Додаємо мобільні обробники кліку
+        this.buttons.forEach((btn) => {
+          const clickHandler = (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            this.handleMobileClick(btn);
+          };
+          btn.addEventListener("click", clickHandler);
+          btn._mobileClickHandler = clickHandler;
+        });
+
+        // Глобальний обробник для закриття мобільних модалок
+        const outsideClickHandler = (e) =>
+          this.closeMobileModalsOnOutsideClick(e);
+        document.addEventListener("click", outsideClickHandler);
+        this._mobileOutsideClickHandler = outsideClickHandler;
+
+        // Cleanup function для мобільного режиму
+        return () => {
+          console.log("Mobile mode deactivated");
+
+          // Закриваємо всі мобільні модалки
+          this.closeAllMobileModals();
+
+          // Видаляємо мобільні обробники
+          this.buttons.forEach((btn) => {
+            if (btn._mobileClickHandler) {
+              btn.removeEventListener("click", btn._mobileClickHandler);
+              btn._mobileClickHandler = null;
+            }
+          });
+
+          if (this._mobileOutsideClickHandler) {
+            document.removeEventListener(
+              "click",
+              this._mobileOutsideClickHandler
+            );
+            this._mobileOutsideClickHandler = null;
+          }
+        };
+      });
+    }
+
+    updateContainerSize() {
+      this.containerRect = this.container.getBoundingClientRect();
+      this.vw = this.containerRect.width;
+      this.vh = this.containerRect.height;
+    }
+
+    setupBall(ball) {
+      const radius = ball.offsetWidth / 2;
+      const x = Math.random() * (this.vw - radius * 2) + radius;
+      const y = Math.random() * (this.vh - radius * 2) + radius;
+      gsap.set(ball, { xPercent: -50, yPercent: -50, x, y });
+
+      const data = {
+        el: ball,
+        radius,
+        get x() {
+          return gsap.getProperty(ball, "x");
+        },
+        get y() {
+          return gsap.getProperty(ball, "y");
+        },
+        // Початкова швидкість стала більшою для швидшого руху
+        vx: (Math.random() - 0.5) * 0.6, // збільшено в 2 рази
+        vy: (Math.random() - 0.5) * 0.6, // збільшено в 2 рази
+        isHovered: false,
+        savedVx: 0,
+        savedVy: 0,
+        // Додаємо плавний розгін
+        targetVx: 0,
+        targetVy: 0,
+        accelerationFactor: 0.02, // швидкість зміни напрямку
+      };
+
+      // Встановлюємо початкові цільові швидкості
+      data.targetVx = data.vx;
+      data.targetVy = data.vy;
+
+      ball._ballData = data;
+      this.ballData.push(data);
+    }
+
+    // Метод для уникнення інших кульок
+    calculateAvoidanceForce(ball) {
+      let avoidX = 0;
+      let avoidY = 0;
+
+      for (const other of this.ballData) {
+        if (other === ball || other.isHovered) continue;
+
+        const dx = ball.x - other.x;
+        const dy = ball.y - other.y;
+        const distance = Math.sqrt(dx ** 2 + dy ** 2);
+
+        // Якщо інша кулька в радіусі уникнення
+        if (distance < this.avoidanceRadius && distance > 0) {
+          // Розраховуємо силу уникнення (сильніше при меншій відстані)
+          const strength =
+            (this.avoidanceRadius - distance) / this.avoidanceRadius;
+          const normalizedX = dx / distance;
+          const normalizedY = dy / distance;
+
+          avoidX += normalizedX * strength * this.avoidanceForce;
+          avoidY += normalizedY * strength * this.avoidanceForce;
+        }
+      }
+
+      return { x: avoidX, y: avoidY };
+    }
+
+    // Покращений метод підтримки руху з плавними змінами та уникненням
+    maintainMovement(ball) {
+      const currentSpeed = Math.sqrt(ball.vx ** 2 + ball.vy ** 2);
+
+      // Додаємо силу уникнення інших кульок
+      const avoidance = this.calculateAvoidanceForce(ball);
+      ball.targetVx += avoidance.x;
+      ball.targetVy += avoidance.y;
+
+      // Якщо швидкість занадто мала, плавно розганяємо
+      if (currentSpeed < this.minSpeed) {
+        // Випадкова зміна напрямку з плавним переходом
+        const angle =
+          Math.atan2(ball.vy, ball.vx) + (Math.random() - 0.5) * 0.3;
+        ball.targetVx =
+          Math.cos(angle) *
+          (this.minSpeed + Math.random() * this.speedVariation);
+        ball.targetVy =
+          Math.sin(angle) *
+          (this.minSpeed + Math.random() * this.speedVariation);
+      }
+
+      // Якщо швидкість занадто велика, плавно сповільнюємо
+      if (currentSpeed > this.maxSpeed) {
+        const scale = this.maxSpeed / currentSpeed;
+        ball.targetVx = ball.vx * scale;
+        ball.targetVy = ball.vy * scale;
+      }
+
+      // Плавно наближаємо поточну швидкість до цільової
+      ball.vx += (ball.targetVx - ball.vx) * ball.accelerationFactor;
+      ball.vy += (ball.targetVy - ball.vy) * ball.accelerationFactor;
+
+      // Іноді змінюємо напрямок для більш природного руху
+      if (Math.random() < 0.003) {
+        // 0.3% шанс кожен кадр
+        const currentAngle = Math.atan2(ball.vy, ball.vx);
+        const newAngle = currentAngle + (Math.random() - 0.5) * 0.4; // невелика зміна напрямку
+        const speed = Math.sqrt(ball.vx ** 2 + ball.vy ** 2);
+        ball.targetVx = Math.cos(newAngle) * speed;
+        ball.targetVy = Math.sin(newAngle) * speed;
+      }
+    }
+
+    handleCollisions() {
+      for (let i = 0; i < this.ballData.length; i++) {
+        const ball1 = this.ballData[i];
+        for (let j = i + 1; j < this.ballData.length; j++) {
+          const ball2 = this.ballData[j];
+          const dx = ball2.x - ball1.x;
+          const dy = ball2.y - ball1.y;
+          const dist = Math.sqrt(dx ** 2 + dy ** 2);
+          const minDist = ball1.radius + ball2.radius;
+
+          if (dist < minDist && dist > 0) {
+            const angle = Math.atan2(dy, dx);
+            const overlap = minDist - dist;
+            const sepX = Math.cos(angle) * overlap * 0.5;
+            const sepY = Math.sin(angle) * overlap * 0.5;
+
+            if (!ball1.isHovered)
+              gsap.set(ball1.el, { x: ball1.x - sepX, y: ball1.y - sepY });
+            if (!ball2.isHovered)
+              gsap.set(ball2.el, { x: ball2.x + sepX, y: ball2.y + sepY });
+
+            const normalX = dx / dist;
+            const normalY = dy / dist;
+            const relVX = ball2.vx - ball1.vx;
+            const relVY = ball2.vy - ball1.vy;
+            const velAlongNormal = relVX * normalX + relVY * normalY;
+
+            if (velAlongNormal > 0) continue;
+
+            // М'якше зіткнення
+            const restitution = 0.6; // зменшили з 0.9
+            const impulse = (2 * velAlongNormal * restitution) / 2;
+            const impulseX = impulse * normalX;
+            const impulseY = impulse * normalY;
+
+            if (!ball1.isHovered) {
+              ball1.vx += impulseX;
+              ball1.vy += impulseY;
+              // Оновлюємо цільові швидкості після зіткнення
+              ball1.targetVx = ball1.vx;
+              ball1.targetVy = ball1.vy;
+            }
+            if (!ball2.isHovered) {
+              ball2.vx -= impulseX;
+              ball2.vy -= impulseY;
+              // Оновлюємо цільові швидкості після зіткнення
+              ball2.targetVx = ball2.vx;
+              ball2.targetVy = ball2.vy;
+            }
+          }
+        }
+      }
+    }
+
+    update() {
+      this.ballData.forEach((ball) => {
+        if (!ball.isHovered) {
+          // Застосовуємо тертя
+          ball.vx *= this.friction;
+          ball.vy *= this.friction;
+
+          // Підтримуємо рух з плавними змінами
+          this.maintainMovement(ball);
+
+          let newX = ball.x + ball.vx;
+          let newY = ball.y + ball.vy;
+
+          // М'якший відскок від стін
+          if (newX - ball.radius <= 0) {
+            newX = ball.radius;
+            ball.vx = Math.abs(ball.vx) * this.wallBounce;
+            ball.targetVx = ball.vx;
+          } else if (newX + ball.radius >= this.vw) {
+            newX = this.vw - ball.radius;
+            ball.vx = -Math.abs(ball.vx) * this.wallBounce;
+            ball.targetVx = ball.vx;
+          }
+
+          if (newY - ball.radius <= 0) {
+            newY = ball.radius;
+            ball.vy = Math.abs(ball.vy) * this.wallBounce;
+            ball.targetVy = ball.vy;
+          } else if (newY + ball.radius >= this.vh) {
+            newY = this.vh - ball.radius;
+            ball.vy = -Math.abs(ball.vy) * this.wallBounce;
+            ball.targetVy = ball.vy;
+          }
+
+          gsap.set(ball.el, { x: newX, y: newY });
+        }
+      });
+
+      this.handleCollisions();
+      requestAnimationFrame(this.update.bind(this));
+    }
+
+    restartBallMovement(ballEl) {
+      const data = ballEl._ballData;
+      if (data) {
+        const angle = Math.random() * Math.PI * 2;
+        const speed = this.minSpeed + Math.random() * this.speedVariation;
+        data.vx = Math.cos(angle) * speed;
+        data.vy = Math.sin(angle) * speed;
+        data.targetVx = data.vx;
+        data.targetVy = data.vy;
+      }
+    }
+
+    positionModal(modal, refEl) {
+      modal.style.position = "absolute";
+      modal.style.margin = "0";
+      modal.style.display = "block";
+
+      FloatingUIDOM.computePosition(refEl, modal, {
+        placement: "bottom-end", // права-знизу за замовчуванням
+        middleware: [
+          FloatingUIDOM.offset(10),
+          FloatingUIDOM.shift({ padding: 8, rootBoundary: "document" }),
+        ],
+      })
+        .then(({ x, y }) => {
+          modal.style.left = `${x}px`;
+          modal.style.top = `${y}px`;
+        })
+        .catch(console.error);
+    }
+
+    // Анімація іконки
+    animateIcon(btn, rotate = true) {
+      const icon = btn.querySelector(".btn-face-item_icon");
+      if (icon) {
+        gsap.to(icon, {
+          rotation: rotate ? 45 : 0,
+          duration: 0.3,
+          ease: "power2.out",
+        });
+      }
+    }
+
+    handleHover(btn) {
+      // Анімуємо іконку
+      this.animateIcon(btn, true);
+
+      // Плавно зупиняємо рух кульки
+      const data = btn._ballData;
+      if (data) {
+        data.isHovered = true;
+        // Зберігаємо поточну швидкість
+        data.savedVx = data.vx;
+        data.savedVy = data.vy;
+        // Плавно зупиняємо рух
+        data.targetVx = 0;
+        data.targetVy = 0;
+      }
+
+      // Затримка для hover
+      clearTimeout(btn._hoverTimeout);
+      btn._hoverTimeout = setTimeout(() => {
+        this.openModal(btn);
+      }, 150);
+    }
+
+    handleHoverLeave(btn) {
+      // Анімуємо іконку назад
+      this.animateIcon(btn, false);
+
+      // Плавно відновлюємо рух кульки
+      const data = btn._ballData;
+      if (data && data.isHovered) {
+        data.isHovered = false;
+        // Відновлюємо збережену швидкість або генеруємо нову
+        if (data.savedVx !== undefined && data.savedVy !== undefined) {
+          data.targetVx = data.savedVx;
+          data.targetVy = data.savedVy;
+          data.vx = data.savedVx * 0.3; // починаємо з меншої швидкості
+          data.vy = data.savedVy * 0.3;
+        } else {
+          const angle = Math.random() * Math.PI * 2;
+          const speed = this.minSpeed;
+          data.targetVx = Math.cos(angle) * speed;
+          data.targetVy = Math.sin(angle) * speed;
+          data.vx = data.targetVx * 0.3;
+          data.vy = data.targetVy * 0.3;
+        }
+      }
+
+      // Скасовуємо відкриття якщо миша покинула елемент
+      clearTimeout(btn._hoverTimeout);
+
+      // Додаємо затримку перед закриттям
+      const buttonTarget = btn.dataset.openModal;
+      const modal = document.getElementById(buttonTarget);
+      if (modal && modal.style.display === "block") {
+        clearTimeout(btn._closeTimeout);
+        btn._closeTimeout = setTimeout(() => {
+          if (!modal.matches(":hover") && !btn.matches(":hover")) {
+            this.closeModal(modal, btn);
+          }
+        }, 300);
+      }
+    }
+
+    handleClick(btn) {
+      this.openModal(btn);
+    }
+
+    openModal(btn) {
+      const buttonTarget = btn.dataset.openModal;
+      const targetModal = document.getElementById(buttonTarget);
+
+      if (!targetModal) return;
+
+      // Перевіряємо чи вже відкрита ця модалка
+      if (targetModal.style.display === "block") return;
+
+      this.buttons.forEach((b) => b.classList.remove("is--active-cirlce"));
+      btn.classList.add("is--active-cirlce");
+      btn.style.zIndex = 30;
+
+      // Закриваємо всі інші модалки
+      this.modals.forEach((modal) => {
+        if (modal !== targetModal) {
+          modal.style.display = "none";
+        }
+      });
+
+      // Відкриваємо цільову модалку
+      const updatePosition = () => {
+        if (targetModal.style.display === "block") {
+          this.positionModal(targetModal, btn);
+        }
+      };
+
+      targetModal.style.opacity = "0";
+      targetModal.style.display = "block";
+      targetModal.style.zIndex = 70; // Встановлюємо z-index для активного тултіпа
+
+      // Додаємо обробники hover для модалки
+      const modalEnterHandler = () => {
+        clearTimeout(btn._closeTimeout);
+      };
+      const modalLeaveHandler = () => {
+        clearTimeout(btn._closeTimeout);
+        btn._closeTimeout = setTimeout(() => {
+          if (!targetModal.matches(":hover") && !btn.matches(":hover")) {
+            this.closeModal(targetModal, btn);
+          }
+        }, 300);
+      };
+
+      targetModal.addEventListener("mouseenter", modalEnterHandler);
+      targetModal.addEventListener("mouseleave", modalLeaveHandler);
+
+      // Зберігаємо обробники для очищення
+      targetModal._modalEnterHandler = modalEnterHandler;
+      targetModal._modalLeaveHandler = modalLeaveHandler;
+
+      this.positionModal(targetModal, btn);
+
+      setTimeout(() => {
+        targetModal.style.opacity = "1";
+        targetModal.style.transition = "opacity 0.2s";
+      }, 150);
+
+      window.addEventListener("resize", updatePosition);
+      window.addEventListener("scroll", updatePosition, true);
+
+      // Зберігаємо посилання на обробники для видалення
+      targetModal._updatePosition = updatePosition;
+    }
+
+    closeModal(modal, btn) {
+      modal.style.display = "none";
+      modal.style.zIndex = ""; // Скидаємо z-index при закритті
+      btn.classList.remove("is--active-cirlce");
+
+      // Анімуємо іконку назад при закритті
+      this.animateIcon(btn, false);
+
+      // Видаляємо обробники
+      if (modal._updatePosition) {
+        window.removeEventListener("resize", modal._updatePosition);
+        window.removeEventListener("scroll", modal._updatePosition, true);
+        modal._updatePosition = null;
+      }
+
+      // Видаляємо modal hover обробники
+      if (modal._modalEnterHandler) {
+        modal.removeEventListener("mouseenter", modal._modalEnterHandler);
+        modal._modalEnterHandler = null;
+      }
+      if (modal._modalLeaveHandler) {
+        modal.removeEventListener("mouseleave", modal._modalLeaveHandler);
+        modal._modalLeaveHandler = null;
+      }
+
+      setTimeout(() => this.restartBallMovement(btn), 100);
+    }
+
+    closeAllModals() {
+      this.modals.forEach((modal, index) => {
+        if (modal.style.display === "block") {
+          this.closeModal(modal, this.buttons[index]);
+        }
+      });
+    }
+
+    // Мобільні методи для FLIP анімацій
+    handleMobileClick(btn) {
+      const buttonTarget = btn.dataset.openModal;
+      const targetModal = document.getElementById(buttonTarget);
+
+      if (!targetModal) return;
+
+      // Перевіряємо чи вже відкрита ця модалка
+      if (targetModal.classList.contains("mobile-active")) {
+        this.closeMobileModal(targetModal, btn);
+        return;
+      }
+
+      // Закриваємо всі інші мобільні модалки
+      this.closeAllMobileModals();
+
+      this.openMobileModal(targetModal, btn);
+    }
+
+    openMobileModal(modal, btn) {
+      const container = btn; // faces_item-contain
+
+      // Зберігаємо початковий стан modal для FLIP
+      const state = Flip.getState(modal);
+
+      // Додаємо клас для ідентифікації активного стану
+      modal.classList.add("mobile-active");
+      btn.classList.add("mobile-modal-open");
+
+      // Тимчасово робимо modal видимим для правильного розрахунку розмірів
+      modal.style.visibility = "hidden";
+      modal.style.display = "block";
+      modal.style.position = "absolute";
+      modal.style.top = "0";
+      modal.style.left = "0";
+      modal.style.right = "0";
+      modal.style.bottom = "0";
+      modal.style.margin = "0";
+      modal.style.zIndex = "100";
+
+      // Переміщуємо modal всередину container
+      container.appendChild(modal);
+
+      // Показуємо modal
+      modal.style.visibility = "visible";
+
+      // Анімуємо FLIP
+      Flip.from(state, {
+        duration: 0.6,
+        ease: "power2.inOut",
+        absolute: true,
+        onComplete: () => {
+          // Анімуємо появу контенту
+          const content = modal.querySelector(".faces_item-tooltip");
+          if (content) {
+            gsap.fromTo(
+              content,
+              {
+                opacity: 0,
+                scale: 0.8,
+                y: 20,
+              },
+              {
+                opacity: 1,
+                scale: 1,
+                y: 0,
+                duration: 0.4,
+                ease: "back.out(1.7)",
+              }
+            );
+          }
+        },
+      });
+
+      // Анімуємо іконку
+      this.animateIcon(btn, true);
+
+      // Плавно зупиняємо рух кульки
+      const data = btn._ballData;
+      if (data) {
+        data.isHovered = true;
+        data.savedVx = data.vx;
+        data.savedVy = data.vy;
+        data.targetVx = 0;
+        data.targetVy = 0;
+      }
+    }
+
+    closeMobileModal(modal, btn) {
+      const originalParent = btn.closest(".faces_item"); // повертаємо в faces_item
+
+      // Анімуємо зникнення контенту
+      const content = modal.querySelector(".faces_item-tooltip");
+      if (content) {
+        gsap.to(content, {
+          opacity: 0,
+          scale: 0.8,
+          y: -20,
+          duration: 0.3,
+          ease: "power2.in",
+        });
+      }
+
+      // Затримка перед FLIP анімацією
+      setTimeout(() => {
+        // Зберігаємо поточний стан modal
+        const state = Flip.getState(modal);
+
+        // Повертаємо modal в оригінальне місце
+        originalParent.appendChild(modal);
+
+        // Скидаємо стилі до початкових
+        modal.style.position = "";
+        modal.style.top = "";
+        modal.style.left = "";
+        modal.style.right = "";
+        modal.style.bottom = "";
+        modal.style.margin = "";
+        modal.style.zIndex = "";
+
+        // FLIP анімація назад
+        Flip.from(state, {
+          duration: 0.5,
+          ease: "power2.inOut",
+          absolute: true,
+          onComplete: () => {
+            // Приховуємо modal після анімації
+            modal.style.display = "none";
+            modal.classList.remove("mobile-active");
+            btn.classList.remove("mobile-modal-open");
+
+            // Скидаємо opacity контенту для наступного відкриття
+            if (content) {
+              gsap.set(content, { opacity: 1, scale: 1, y: 0 });
+            }
+          },
+        });
+      }, 300);
+
+      // Анімуємо іконку назад
+      this.animateIcon(btn, false);
+
+      // Плавно відновлюємо рух кульки
+      const data = btn._ballData;
+      if (data && data.isHovered) {
+        data.isHovered = false;
+        if (data.savedVx !== undefined && data.savedVy !== undefined) {
+          data.targetVx = data.savedVx;
+          data.targetVy = data.savedVy;
+          data.vx = data.savedVx * 0.3;
+          data.vy = data.savedVy * 0.3;
+        } else {
+          const angle = Math.random() * Math.PI * 2;
+          const speed = this.minSpeed;
+          data.targetVx = Math.cos(angle) * speed;
+          data.targetVy = Math.sin(angle) * speed;
+          data.vx = data.targetVx * 0.3;
+          data.vy = data.targetVy * 0.3;
+        }
+      }
+    }
+
+    closeAllMobileModals() {
+      this.modals.forEach((modal, index) => {
+        if (modal.classList.contains("mobile-active")) {
+          this.closeMobileModal(modal, this.buttons[index]);
+        }
+      });
+    }
+
+    closeMobileModalsOnOutsideClick(e) {
+      // Перевіряємо чи клік був поза активною мобільною модалкою
+      const activeModal = this.modals.find((modal) =>
+        modal.classList.contains("mobile-active")
+      );
+      if (activeModal && !activeModal.contains(e.target)) {
+        const index = this.modals.indexOf(activeModal);
+        this.closeMobileModal(activeModal, this.buttons[index]);
+      }
+    }
+
+    closeOnOutsideClick(e) {
+      this.modals.forEach((modal, index) => {
+        if (
+          modal.style.display === "block" &&
+          !modal.contains(e.target) &&
+          !this.buttons[index].contains(e.target)
+        ) {
+          this.closeModal(modal, this.buttons[index]);
+        }
+      });
+    }
+
+    closeOnEscape(e) {
+      if (e.key === "Escape") {
+        this.modals.forEach((modal, index) => {
+          if (modal.style.display === "block") {
+            this.closeModal(modal, this.buttons[index]);
+          }
+        });
+      }
+    }
+
+    // Метод для очищення при знищенні екземпляра
+    destroy() {
+      // Очищуємо GSAP MatchMedia
+      this.mm.kill();
+
+      // Очищуємо інші обробники
+      window.removeEventListener("resize", this.updateContainerSize.bind(this));
+
+      // Закриваємо всі модалки (desktop та mobile)
+      this.closeAllModals();
+      this.closeAllMobileModals();
+    }
+  }
+
+  // Створюємо екземпляр класу
+  window.kaifInstance = new Kaif(".faces_block-space");
+});
