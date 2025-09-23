@@ -1,7 +1,14 @@
 document.addEventListener("DOMContentLoaded", () => {
   var swiper = new Swiper(".swiper.is--journey", {
     slidesPerView: "auto",
-    spaceBetween: "2%",
+    breakpoints: {
+      320: {
+        spaceBetween: 8,
+      },
+      768: {
+        spaceBetween: 20,
+      },
+    },
   });
   const slideToggles = document.querySelectorAll(".journey-slide-nav_item");
   slideToggles[0].classList.add("is-active");
