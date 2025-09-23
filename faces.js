@@ -881,7 +881,7 @@ document.addEventListener("DOMContentLoaded", () => {
         centeredSlides: true,
         breakpoints: {
           320: {
-            spaceBetween: "10%",
+            spaceBetween: "8%",
           },
           768: {
             spaceBetween: "5%",
