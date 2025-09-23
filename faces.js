@@ -931,6 +931,16 @@ document.addEventListener("DOMContentLoaded", () => {
         const isOpen = tooltip.style.display === "block";
 
         if (isOpen) {
+          // Анімуємо іконку назад
+          const icon = btn.querySelector(".btn-face-item_icon");
+          if (icon) {
+            gsap.to(icon, {
+              rotation: 0,
+              duration: 0.3,
+              ease: "power2.out",
+            });
+          }
+
           // Закриваємо tooltip
           gsap.to(tooltip, {
             opacity: 0,
@@ -948,6 +958,16 @@ document.addEventListener("DOMContentLoaded", () => {
           sliderFaceButtons.forEach((otherBtn) => {
             const otherTooltip = otherBtn.closest(".faces_item").querySelector(".faces_item-tooltip_wrp");
             if (otherTooltip && otherTooltip !== tooltip && otherTooltip.style.display === "block") {
+              // Анімуємо іконку інших кнопок назад
+              const otherIcon = otherBtn.querySelector(".btn-face-item_icon");
+              if (otherIcon) {
+                gsap.to(otherIcon, {
+                  rotation: 0,
+                  duration: 0.2,
+                  ease: "power2.out",
+                });
+              }
+
               gsap.to(otherTooltip, {
                 opacity: 0,
                 scale: 0.8,
@@ -961,6 +981,16 @@ document.addEventListener("DOMContentLoaded", () => {
               });
             }
           });
+
+          // Анімуємо іконку поточної кнопки
+          const icon = btn.querySelector(".btn-face-item_icon");
+          if (icon) {
+            gsap.to(icon, {
+              rotation: 45,
+              duration: 0.3,
+              ease: "power2.out",
+            });
+          }
 
           // Відкриваємо поточний tooltip
           tooltip.style.display = "block";
@@ -991,6 +1021,16 @@ document.addEventListener("DOMContentLoaded", () => {
       sliderFaceButtons.forEach((btn) => {
         const tooltip = btn.closest(".faces_item").querySelector(".faces_item-tooltip_wrp");
         if (tooltip && tooltip.style.display === "block") {
+          // Анімуємо іконку назад при закритті
+          const icon = btn.querySelector(".btn-face-item_icon");
+          if (icon) {
+            gsap.to(icon, {
+              rotation: 0,
+              duration: 0.3,
+              ease: "power2.out",
+            });
+          }
+
           gsap.to(tooltip, {
             opacity: 0,
             scale: 0.8,
