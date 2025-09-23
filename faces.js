@@ -879,6 +879,14 @@ document.addEventListener("DOMContentLoaded", () => {
         slidesPerView: "auto",
         spaceBetween: "5%",
         centeredSlides: true,
+        breakpoints: {
+          320: {
+            spaceBetween: "10%",
+          },
+          768: {
+            spaceBetween: "5%",
+          },
+        },
       });
       console.log("Faces Swiper initialized");
     }
@@ -909,10 +917,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
 //slider faces_item tooltips animation (без FLIP)
 document.addEventListener("DOMContentLoaded", () => {
-  const sliderFaceButtons = document.querySelectorAll(".swiper.is--faces .btn-face-item");
+  const sliderFaceButtons = document.querySelectorAll(
+    ".swiper.is--faces .btn-face-item"
+  );
 
   sliderFaceButtons.forEach((btn) => {
-    const tooltip = btn.closest(".faces_item").querySelector(".faces_item-tooltip_wrp");
+    const tooltip = btn
+      .closest(".faces_item")
+      .querySelector(".faces_item-tooltip_wrp");
 
     if (tooltip) {
       // Ініціалізуємо tooltip як прихований
@@ -920,7 +932,7 @@ document.addEventListener("DOMContentLoaded", () => {
         opacity: 0,
         scale: 0.8,
         y: 20,
-        display: "none"
+        display: "none",
       });
 
       btn.addEventListener("click", (e) => {
@@ -951,13 +963,19 @@ document.addEventListener("DOMContentLoaded", () => {
             onComplete: () => {
               tooltip.style.display = "none";
               btn.classList.remove("is--active");
-            }
+            },
           });
         } else {
           // Закриваємо всі інші tooltips в слайдері
           sliderFaceButtons.forEach((otherBtn) => {
-            const otherTooltip = otherBtn.closest(".faces_item").querySelector(".faces_item-tooltip_wrp");
-            if (otherTooltip && otherTooltip !== tooltip && otherTooltip.style.display === "block") {
+            const otherTooltip = otherBtn
+              .closest(".faces_item")
+              .querySelector(".faces_item-tooltip_wrp");
+            if (
+              otherTooltip &&
+              otherTooltip !== tooltip &&
+              otherTooltip.style.display === "block"
+            ) {
               // Анімуємо іконку інших кнопок назад
               const otherIcon = otherBtn.querySelector(".btn-face-item_icon");
               if (otherIcon) {
@@ -977,7 +995,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 onComplete: () => {
                   otherTooltip.style.display = "none";
                   otherBtn.classList.remove("is--active");
-                }
+                },
               });
             }
           });
@@ -996,18 +1014,19 @@ document.addEventListener("DOMContentLoaded", () => {
           tooltip.style.display = "block";
           btn.classList.add("is--active");
 
-          gsap.fromTo(tooltip,
+          gsap.fromTo(
+            tooltip,
             {
               opacity: 0,
               scale: 0.8,
-              y: 20
+              y: 20,
             },
             {
               opacity: 1,
               scale: 1,
               y: 0,
               duration: 0.4,
-              ease: "back.out(1.7)"
+              ease: "back.out(1.7)",
             }
           );
         }
@@ -1019,7 +1038,9 @@ document.addEventListener("DOMContentLoaded", () => {
   document.addEventListener("click", (e) => {
     if (!e.target.closest(".swiper.is--faces")) {
       sliderFaceButtons.forEach((btn) => {
-        const tooltip = btn.closest(".faces_item").querySelector(".faces_item-tooltip_wrp");
+        const tooltip = btn
+          .closest(".faces_item")
+          .querySelector(".faces_item-tooltip_wrp");
         if (tooltip && tooltip.style.display === "block") {
           // Анімуємо іконку назад при закритті
           const icon = btn.querySelector(".btn-face-item_icon");
@@ -1040,7 +1061,7 @@ document.addEventListener("DOMContentLoaded", () => {
             onComplete: () => {
               tooltip.style.display = "none";
               btn.classList.remove("is--active");
-            }
+            },
           });
         }
       });
