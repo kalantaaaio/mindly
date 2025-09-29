@@ -72,9 +72,9 @@ document.addEventListener("DOMContentLoaded", () => {
       // Покращені параметри для плавнішого руху
       this.friction = 0.995; // менше тертя для плавнішого руху
       this.wallBounce = 0.7; // менший відскок від стін
-      this.minSpeed = 0.16; // збільшено в 2 рази (0.08 * 2)
-      this.maxSpeed = 0.8; // збільшено в 2 рази (0.4 * 2)
-      this.speedVariation = 0.2; // збільшено варіацію швидкості
+      this.minSpeed = 0.04; // зменшено в 4 рази для повільного руху
+      this.maxSpeed = 0.2; // зменшено в 4 рази для повільного руху
+      this.speedVariation = 0.08; // збільшена варіація для різних швидкостей
       this.avoidanceRadius = 80; // радіус уникнення інших кульок
       this.avoidanceForce = 0.015; // сила уникнення
 
@@ -261,9 +261,9 @@ document.addEventListener("DOMContentLoaded", () => {
         get y() {
           return gsap.getProperty(ball, "y");
         },
-        // Початкова швидкість стала більшою для швидшого руху
-        vx: (Math.random() - 0.5) * 0.6, // збільшено в 2 рази
-        vy: (Math.random() - 0.5) * 0.6, // збільшено в 2 рази
+        // Початкова швидкість з індивідуальною варіацією
+        vx: (Math.random() - 0.5) * (0.1 + Math.random() * 0.1), // від 0.05 до 0.15
+        vy: (Math.random() - 0.5) * (0.1 + Math.random() * 0.1), // від 0.05 до 0.15
         isHovered: false,
         savedVx: 0,
         savedVy: 0,
@@ -271,6 +271,9 @@ document.addEventListener("DOMContentLoaded", () => {
         targetVx: 0,
         targetVy: 0,
         accelerationFactor: 0.02, // швидкість зміни напрямку
+        // Індивідуальні параметри швидкості для кожного обличчя
+        personalMinSpeed: this.minSpeed + Math.random() * this.speedVariation,
+        personalMaxSpeed: this.maxSpeed + Math.random() * this.speedVariation,
       };
 
       // Встановлюємо початкові цільові швидкості
@@ -389,21 +392,21 @@ document.addEventListener("DOMContentLoaded", () => {
       ball.targetVy += centerForce.y;
 
       // Якщо швидкість занадто мала, плавно розганяємо
-      if (currentSpeed < this.minSpeed) {
+      if (currentSpeed < ball.personalMinSpeed) {
         // Випадкова зміна напрямку з плавним переходом
         const angle =
           Math.atan2(ball.vy, ball.vx) + (Math.random() - 0.5) * 0.3;
         ball.targetVx =
           Math.cos(angle) *
-          (this.minSpeed + Math.random() * this.speedVariation);
+          (ball.personalMinSpeed + Math.random() * this.speedVariation);
         ball.targetVy =
           Math.sin(angle) *
-          (this.minSpeed + Math.random() * this.speedVariation);
+          (ball.personalMinSpeed + Math.random() * this.speedVariation);
       }
 
       // Якщо швидкість занадто велика, плавно сповільнюємо
-      if (currentSpeed > this.maxSpeed) {
-        const scale = this.maxSpeed / currentSpeed;
+      if (currentSpeed > ball.personalMaxSpeed) {
+        const scale = ball.personalMaxSpeed / currentSpeed;
         ball.targetVx = ball.vx * scale;
         ball.targetVy = ball.vy * scale;
       }
@@ -533,7 +536,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const data = ballEl._ballData;
       if (data) {
         const angle = Math.random() * Math.PI * 2;
-        const speed = this.minSpeed + Math.random() * this.speedVariation;
+        const speed = data.personalMinSpeed + Math.random() * this.speedVariation;
         data.vx = Math.cos(angle) * speed;
         data.vy = Math.sin(angle) * speed;
         data.targetVx = data.vx;
@@ -611,7 +614,7 @@ document.addEventListener("DOMContentLoaded", () => {
           data.vy = data.savedVy * 0.3;
         } else {
           const angle = Math.random() * Math.PI * 2;
-          const speed = this.minSpeed;
+          const speed = data.personalMinSpeed;
           data.targetVx = Math.cos(angle) * speed;
           data.targetVy = Math.sin(angle) * speed;
           data.vx = data.targetVx * 0.3;
@@ -893,7 +896,7 @@ document.addEventListener("DOMContentLoaded", () => {
           data.vy = data.savedVy * 0.3;
         } else {
           const angle = Math.random() * Math.PI * 2;
-          const speed = this.minSpeed;
+          const speed = data.personalMinSpeed;
           data.targetVx = Math.cos(angle) * speed;
           data.targetVy = Math.sin(angle) * speed;
           data.vx = data.targetVx * 0.3;
