@@ -72,9 +72,9 @@ document.addEventListener("DOMContentLoaded", () => {
       // Покращені параметри для плавнішого руху
       this.friction = 0.995; // менше тертя для плавнішого руху
       this.wallBounce = 0.6; // повертаємо більший відскок
-      this.minSpeed = 0.01; // зменшено ще в 4 рази для дуже повільного руху
-      this.maxSpeed = 0.03; // обмежуємо максимальну швидкість
-      this.speedVariation = 0.02; // повертаємо попередню варіацію
+      this.minSpeed = 0.05; // збільшено в 5 разів
+      this.maxSpeed = 0.15; // збільшено в 5 разів
+      this.speedVariation = 0.1; // збільшено в 5 разів
       this.avoidanceRadius = 80; // радіус уникнення інших кульок
       this.avoidanceForce = 0.015; // сила уникнення
 
@@ -262,8 +262,8 @@ document.addEventListener("DOMContentLoaded", () => {
           return gsap.getProperty(ball, "y");
         },
         // Початкова швидкість з індивідуальною варіацією
-        vx: (Math.random() - 0.5) * (0.025 + Math.random() * 0.025), // від 0.0125 до 0.0375
-        vy: (Math.random() - 0.5) * (0.025 + Math.random() * 0.025), // від 0.0125 до 0.0375
+        vx: (Math.random() - 0.5) * (0.125 + Math.random() * 0.125), // від 0.0625 до 0.1875
+        vy: (Math.random() - 0.5) * (0.125 + Math.random() * 0.125), // від 0.0625 до 0.1875
         isHovered: false,
         savedVx: 0,
         savedVy: 0,
