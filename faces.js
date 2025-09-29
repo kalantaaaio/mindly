@@ -71,10 +71,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // Покращені параметри для плавнішого руху
       this.friction = 0.995; // менше тертя для плавнішого руху
-      this.wallBounce = 0.4; // ще менший відскок від стін для запобігання розгону
+      this.wallBounce = 0.6; // повертаємо більший відскок
       this.minSpeed = 0.01; // зменшено ще в 4 рази для дуже повільного руху
-      this.maxSpeed = 0.025; // зменшено максимальну швидкість для запобігання розгону
-      this.speedVariation = 0.01; // зменшена варіація для більш стабільного руху
+      this.maxSpeed = 0.03; // обмежуємо максимальну швидкість
+      this.speedVariation = 0.02; // повертаємо попередню варіацію
       this.avoidanceRadius = 80; // радіус уникнення інших кульок
       this.avoidanceForce = 0.015; // сила уникнення
 
@@ -455,8 +455,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
             if (velAlongNormal > 0) continue;
 
-            // Дуже м'яке зіткнення для запобігання розгону
-            const restitution = 0.3; // зменшили ще більше
+            // М'яке зіткнення
+            const restitution = 0.5; // повертаємо більш активний рух
             const impulse = (2 * velAlongNormal * restitution) / 2;
             const impulseX = impulse * normalX;
             const impulseY = impulse * normalY;
