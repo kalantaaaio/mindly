@@ -223,17 +223,38 @@ document.addEventListener("DOMContentLoaded", () => {
       this.containerRect = this.container.getBoundingClientRect();
       this.vw = this.containerRect.width;
       this.vh = this.containerRect.height;
+
+      // Перераховуємо зони для всіх кульок при зміні розміру
+      this.ballData.forEach((ball, index) => {
+        const { zone } = this.calculateInitialPosition(index, this.ballData.length, ball.radius);
+        ball.zone = zone;
+
+        // Перевіряємо, чи кулька не вийшла за межі нової зони
+        const currentX = ball.x;
+        const currentY = ball.y;
+
+        if (currentX < zone.minX || currentX > zone.maxX || currentY < zone.minY || currentY > zone.maxY) {
+          // Переміщуємо кульку в межі нової зони
+          const newX = Math.max(zone.minX, Math.min(zone.maxX, currentX));
+          const newY = Math.max(zone.minY, Math.min(zone.maxY, currentY));
+          gsap.set(ball.el, { x: newX, y: newY });
+        }
+      });
     }
 
     setupBall(ball) {
       const radius = ball.offsetWidth / 2;
-      const x = Math.random() * (this.vw - radius * 2) + radius;
-      const y = Math.random() * (this.vh - radius * 2) + radius;
+      const ballIndex = this.balls.indexOf(ball);
+      const totalBalls = this.balls.length;
+
+      // Розраховуємо позицію для рівномірного розподілу
+      const { x, y, zone } = this.calculateInitialPosition(ballIndex, totalBalls, radius);
       gsap.set(ball, { xPercent: -50, yPercent: -50, x, y });
 
       const data = {
         el: ball,
         radius,
+        zone: zone, // зберігаємо зону для обмеження руху
         get x() {
           return gsap.getProperty(ball, "x");
         },
@@ -258,6 +279,45 @@ document.addEventListener("DOMContentLoaded", () => {
 
       ball._ballData = data;
       this.ballData.push(data);
+    }
+
+    calculateInitialPosition(index, total, radius) {
+      // Розраховуємо сітку для рівномірного розподілу
+      const cols = Math.ceil(Math.sqrt(total));
+      const rows = Math.ceil(total / cols);
+
+      const row = Math.floor(index / cols);
+      const col = index % cols;
+
+      // Розмір зони для кожного обличчя з відступами
+      const zoneWidth = this.vw / cols;
+      const zoneHeight = this.vh / rows;
+      const padding = Math.min(zoneWidth, zoneHeight) * 0.15; // 15% відступ
+
+      // Центр зони
+      const zoneCenterX = (col + 0.5) * zoneWidth;
+      const zoneCenterY = (row + 0.5) * zoneHeight;
+
+      // Додаємо невелике випадкове зміщення від центру зони
+      const randomOffset = Math.min(zoneWidth, zoneHeight) * 0.2;
+      const x = zoneCenterX + (Math.random() - 0.5) * randomOffset;
+      const y = zoneCenterY + (Math.random() - 0.5) * randomOffset;
+
+      // Зона для обмеження руху
+      const zone = {
+        minX: col * zoneWidth + padding + radius,
+        maxX: (col + 1) * zoneWidth - padding - radius,
+        minY: row * zoneHeight + padding + radius,
+        maxY: (row + 1) * zoneHeight - padding - radius,
+        centerX: zoneCenterX,
+        centerY: zoneCenterY
+      };
+
+      // Перевіряємо, щоб початкова позиція була в межах зони
+      const finalX = Math.max(zone.minX, Math.min(zone.maxX, x));
+      const finalY = Math.max(zone.minY, Math.min(zone.maxY, y));
+
+      return { x: finalX, y: finalY, zone };
     }
 
     // Метод для уникнення інших кульок
@@ -288,6 +348,32 @@ document.addEventListener("DOMContentLoaded", () => {
       return { x: avoidX, y: avoidY };
     }
 
+    // Метод для м'якого притягання до центру зони
+    calculateCenterAttraction(ball) {
+      const dx = ball.zone.centerX - ball.x;
+      const dy = ball.zone.centerY - ball.y;
+      const distance = Math.sqrt(dx ** 2 + dy ** 2);
+
+      if (distance === 0) return { x: 0, y: 0 };
+
+      // Сила притягання зростає квадратично з відстанню від центру
+      const maxDistance = Math.min(
+        ball.zone.maxX - ball.zone.minX,
+        ball.zone.maxY - ball.zone.minY
+      ) / 2;
+
+      const normalizedDistance = Math.min(distance / maxDistance, 1);
+      const attractionStrength = 0.005 * normalizedDistance * normalizedDistance; // м'яка квадратична сила
+
+      const normalizedX = dx / distance;
+      const normalizedY = dy / distance;
+
+      return {
+        x: normalizedX * attractionStrength,
+        y: normalizedY * attractionStrength
+      };
+    }
+
     // Покращений метод підтримки руху з плавними змінами та уникненням
     maintainMovement(ball) {
       const currentSpeed = Math.sqrt(ball.vx ** 2 + ball.vy ** 2);
@@ -296,6 +382,11 @@ document.addEventListener("DOMContentLoaded", () => {
       const avoidance = this.calculateAvoidanceForce(ball);
       ball.targetVx += avoidance.x;
       ball.targetVy += avoidance.y;
+
+      // Додаємо м'яку силу притягання до центру зони
+      const centerForce = this.calculateCenterAttraction(ball);
+      ball.targetVx += centerForce.x;
+      ball.targetVy += centerForce.y;
 
       // Якщо швидкість занадто мала, плавно розганяємо
       if (currentSpeed < this.minSpeed) {
@@ -401,23 +492,23 @@ document.addEventListener("DOMContentLoaded", () => {
           let newX = ball.x + ball.vx;
           let newY = ball.y + ball.vy;
 
-          // М'якший відскок від стін
-          if (newX - ball.radius <= 0) {
-            newX = ball.radius;
+          // Відскок від меж зони замість загальних стін контейнера
+          if (newX <= ball.zone.minX) {
+            newX = ball.zone.minX;
             ball.vx = Math.abs(ball.vx) * this.wallBounce;
             ball.targetVx = ball.vx;
-          } else if (newX + ball.radius >= this.vw) {
-            newX = this.vw - ball.radius;
+          } else if (newX >= ball.zone.maxX) {
+            newX = ball.zone.maxX;
             ball.vx = -Math.abs(ball.vx) * this.wallBounce;
             ball.targetVx = ball.vx;
           }
 
-          if (newY - ball.radius <= 0) {
-            newY = ball.radius;
+          if (newY <= ball.zone.minY) {
+            newY = ball.zone.minY;
             ball.vy = Math.abs(ball.vy) * this.wallBounce;
             ball.targetVy = ball.vy;
-          } else if (newY + ball.radius >= this.vh) {
-            newY = this.vh - ball.radius;
+          } else if (newY >= ball.zone.maxY) {
+            newY = ball.zone.maxY;
             ball.vy = -Math.abs(ball.vy) * this.wallBounce;
             ball.targetVy = ball.vy;
           }
