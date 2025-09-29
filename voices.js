@@ -28,20 +28,43 @@ function setupSlider() {
       }
     });
 
+    let isHovered = false;
+    let isInView = false;
+
+    // Function to control animation state
+    const updateAnimationState = () => {
+      const shouldPlay = isInView && !isHovered;
+      allWrappers.forEach((wrapper) => {
+        wrapper.style.animationPlayState = shouldPlay ? "running" : "paused";
+      });
+    };
+
     // Add hover pause functionality for marquee
     swiperElement.addEventListener("mouseenter", () => {
-      console.log("marquee pause");
-      allWrappers.forEach((wrapper) => {
-        wrapper.style.animationPlayState = "paused";
-      });
+      console.log("marquee hover pause");
+      isHovered = true;
+      updateAnimationState();
     });
 
     swiperElement.addEventListener("mouseleave", () => {
-      console.log("marquee resume");
-      allWrappers.forEach((wrapper) => {
-        wrapper.style.animationPlayState = "running";
-      });
+      console.log("marquee hover resume");
+      isHovered = false;
+      updateAnimationState();
     });
+
+    // Add Intersection Observer for viewport visibility
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        isInView = entry.isIntersecting;
+        console.log("marquee viewport:", isInView ? "visible" : "hidden");
+        updateAnimationState();
+      });
+    }, {
+      threshold: 0.1 // Trigger when at least 10% is visible
+    });
+
+    observer.observe(swiperElement);
+
   } else {
     // Small screens: use regular swiper
     const swiper = new Swiper(".swiper.is--voice-small", {
