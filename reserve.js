@@ -2820,3 +2820,64 @@ document.addEventListener("DOMContentLoaded", () => {
   // Створюємо екземпляр класу
   window.kaifInstance = new Kaif(".faces_block-space");
 });
+
+document.addEventListener("DOMContentLoaded", () => {
+  const rows = document.querySelectorAll(".professionals_title-row");
+
+  let mm = gsap.matchMedia();
+  rows.forEach((row) => {
+    let tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: row,
+
+        start: "top 10%",
+        end: "bottom 10%",
+        scrub: true,
+      },
+    });
+    tl.to(row, {
+      scale: 0.9,
+      rotateX: 90,
+      duration: 1,
+    });
+  });
+  mm.add("(min-width: 992px)", () => {
+    const tooltips = document.querySelectorAll(
+      ".professionals_contain-tooltip"
+    );
+    tooltips.forEach((tooltip, i) => {
+      const avatar = tooltip.querySelector(
+        ".professionals_contain-tooltip_avatar"
+      );
+      const city = tooltip.querySelector(
+        ".professionals_contain-tooltip_country"
+      );
+      if (i === 0 || i === 2) {
+        gsap.set(city, { rotateZ: -15 });
+      } else {
+        gsap.set(city, { rotateZ: 15 });
+      }
+      const tl = gsap.timeline({ paused: true, ease: "power2.out" });
+      tl.to(city, { opacity: 1, duration: 0.2 }, i * 0.2);
+      tl.to(avatar, { opacity: 1, duration: 0.2 }, i * 0.2);
+      tl.to(
+        avatar,
+        { y: 10, duration: 0.2, yoyo: true, repeat: 1 },
+        i * 0.2 + 0.2
+      );
+      tl.to(
+        city,
+        { rotateZ: 0, duration: 0.2, ease: "back.out(4)" },
+        i * 0.3 + 0.3
+      );
+      // Створюємо ScrollTrigger
+      ScrollTrigger.create({
+        trigger: ".professionals_contain-text",
+        start: "top 50%",
+        onEnter: () => {
+          tl.play();
+        },
+      });
+    });
+  });
+});
