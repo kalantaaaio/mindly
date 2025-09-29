@@ -1,10 +1,10 @@
 document.addEventListener("DOMContentLoaded", () => {
   var swiper = new Swiper(".swiper.is--journey", {
     slidesPerView: "auto",
+    centeredSlides: true,
     breakpoints: {
       320: {
         spaceBetween: 8,
-        centeredSlides: true,
       },
       768: {
         spaceBetween: 20,
