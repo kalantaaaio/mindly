@@ -1,81 +1,202 @@
-// Function to setup marquee for large screens or swiper for mobile
-function setupSlider() {
-  const swiperElement = document.querySelector(".swiper.is--voice-small");
-  const swiperWrapper = swiperElement.querySelector(".swiper-wrapper");
+console.log("ss");
 
-  if (window.innerWidth >= 992) {
-    // Large screens: convert to marquee
-    swiperElement.classList.add("is-marquee");
+document.addEventListener("DOMContentLoaded", () => {
+  function setupSliderMain() {
+    const swiperElement = document.querySelector(".swiper.is-voice-main");
+    const swiperWrapper = swiperElement.querySelector(".swiper-wrapper");
 
-    // Duplicate wrapper content for marquee effect
-    const originalWrapper = swiperWrapper.cloneNode(true);
-    swiperElement.appendChild(originalWrapper);
+    let swiper = null;
+    let resizeTimeout = null;
 
-    // For 1920px+: add one more duplicate (triple)
-    let thirdWrapper;
-    if (window.innerWidth >= 1920) {
-      thirdWrapper = originalWrapper.cloneNode(true);
-      swiperElement.appendChild(thirdWrapper);
+    function debounce(func, delay) {
+      return function () {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(func, delay);
+      };
     }
 
-    // Add basic marquee animation to all wrappers
-    const allWrappers = [swiperWrapper, originalWrapper];
-    if (thirdWrapper) allWrappers.push(thirdWrapper);
-
-    allWrappers.forEach((wrapper) => {
-      if (!wrapper.style.animation) {
-        wrapper.style.animation = "marquee 20s linear infinite";
+    function handleSwiper() {
+      if (window.innerWidth < 992) {
+        if (!swiper) {
+          swiper = new Swiper(swiperElement, {
+            slidesPerView: "auto",
+            spaceBetween: 10,
+            centeredSlides: true,
+            initialSlide: 1,
+          });
+        }
+      } else {
+        if (swiper) {
+          swiper.destroy(true, true);
+          swiper = null;
+        }
       }
-    });
+    }
 
+    handleSwiper();
+
+    const resizeObserver = new ResizeObserver(
+      debounce(() => {
+        handleSwiper();
+      }, 250)
+    );
+
+    resizeObserver.observe(document.body);
+
+    return () => {
+      resizeObserver.disconnect();
+      if (swiper) {
+        swiper.destroy(true, true);
+      }
+    };
+  }
+
+  function setupSliderMarquee() {
+    const swiperElement = document.querySelector(".swiper.is--voice-small");
+    const swiperWrapper = swiperElement.querySelector(".swiper-wrapper");
+
+    let swiper = null;
+    let resizeTimeout = null;
+    let marqueeWrappers = [];
+    let intersectionObserver = null;
     let isHovered = false;
     let isInView = false;
 
-    // Function to control animation state
-    const updateAnimationState = () => {
-      const shouldPlay = isInView && !isHovered;
-      allWrappers.forEach((wrapper) => {
-        wrapper.style.animationPlayState = shouldPlay ? "running" : "paused";
+    function debounce(func, delay) {
+      return function () {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(func, delay);
+      };
+    }
+
+    // Функція очищення marquee
+    function cleanupMarquee() {
+      if (intersectionObserver) {
+        intersectionObserver.disconnect();
+        intersectionObserver = null;
+      }
+
+      // Видаляємо клоновані wrapper'и
+      marqueeWrappers.forEach((wrapper, index) => {
+        if (index > 0) {
+          // Не видаляємо оригінальний wrapper
+          wrapper.remove();
+        }
       });
-    };
 
-    // Add hover pause functionality for marquee
-    swiperElement.addEventListener("mouseenter", () => {
-      console.log("marquee hover pause");
-      isHovered = true;
-      updateAnimationState();
-    });
+      // Очищаємо стилі оригінального wrapper'а
+      if (swiperWrapper) {
+        swiperWrapper.style.animation = "";
+        swiperWrapper.style.animationPlayState = "";
+      }
 
-    swiperElement.addEventListener("mouseleave", () => {
-      console.log("marquee hover resume");
-      isHovered = false;
-      updateAnimationState();
-    });
+      marqueeWrappers = [];
+      swiperElement.classList.remove("is-marquee");
+    }
 
-    // Add Intersection Observer for viewport visibility
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        isInView = entry.isIntersecting;
-        console.log("marquee viewport:", isInView ? "visible" : "hidden");
+    // Функція ініціалізації marquee
+    function initMarquee() {
+      swiperElement.classList.add("is-marquee");
+
+      // Дублюємо wrapper для ефекту marquee
+      const clonedWrapper = swiperWrapper.cloneNode(true);
+      swiperElement.appendChild(clonedWrapper);
+
+      marqueeWrappers = [swiperWrapper, clonedWrapper];
+
+      // Для екранів 1920px+ додаємо третій дублікат
+      if (window.innerWidth >= 1920) {
+        const thirdWrapper = swiperWrapper.cloneNode(true);
+        swiperElement.appendChild(thirdWrapper);
+        marqueeWrappers.push(thirdWrapper);
+      }
+
+      // Додаємо анімацію
+      marqueeWrappers.forEach((wrapper) => {
+        wrapper.style.animation = "marquee 20s linear infinite";
+      });
+
+      // Функція контролю стану анімації
+      const updateAnimationState = () => {
+        const shouldPlay = isInView && !isHovered;
+        marqueeWrappers.forEach((wrapper) => {
+          wrapper.style.animationPlayState = shouldPlay ? "running" : "paused";
+        });
+      };
+
+      // Hover pause
+      swiperElement.addEventListener("mouseenter", () => {
+        console.log("marquee hover pause");
+        isHovered = true;
         updateAnimationState();
       });
-    }, {
-      threshold: 0.1 // Trigger when at least 10% is visible
-    });
 
-    observer.observe(swiperElement);
+      swiperElement.addEventListener("mouseleave", () => {
+        console.log("marquee hover resume");
+        isHovered = false;
+        updateAnimationState();
+      });
 
-  } else {
-    // Small screens: use regular swiper
-    const swiper = new Swiper(".swiper.is--voice-small", {
-      slidesPerView: "auto",
-      spaceBetween: 12,
-      allowTouchMove: true,
-      freeMode: true,
-      freeModeMomentum: false,
-    });
+      // Intersection Observer для видимості у viewport
+      intersectionObserver = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            isInView = entry.isIntersecting;
+            updateAnimationState();
+          });
+        },
+        { threshold: 0.1 }
+      );
+
+      intersectionObserver.observe(swiperElement);
+    }
+
+    // Головна функція обробки
+    function handleSlider() {
+      if (window.innerWidth >= 992) {
+        // Великі екрани: marquee
+        if (swiper) {
+          swiper.destroy(true, true);
+          swiper = null;
+        }
+        if (marqueeWrappers.length === 0) {
+          initMarquee();
+        }
+      } else {
+        // Малі екрани: swiper
+        cleanupMarquee();
+        if (!swiper) {
+          swiper = new Swiper(swiperElement, {
+            slidesPerView: "auto",
+            spaceBetween: 12,
+          });
+        }
+      }
+    }
+
+    // Ініціалізація при завантаженні
+    handleSlider();
+
+    // ResizeObserver з debounce
+    const resizeObserver = new ResizeObserver(
+      debounce(() => {
+        handleSlider();
+      }, 250)
+    );
+
+    resizeObserver.observe(document.body);
+
+    // Cleanup функція
+    return () => {
+      resizeObserver.disconnect();
+      cleanupMarquee();
+      if (swiper) {
+        swiper.destroy(true, true);
+      }
+    };
   }
-}
 
-// Initialize on load
-setupSlider();
+  // Ініціалізація
+  setupSliderMain();
+  setupSliderMarquee();
+});
