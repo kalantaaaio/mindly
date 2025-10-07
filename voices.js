@@ -113,7 +113,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // Додаємо анімацію
       marqueeWrappers.forEach((wrapper) => {
-        wrapper.style.animation = "marquee 20s linear infinite";
+        wrapper.style.animation = "marquee 60s linear infinite";
       });
 
       // Функція контролю стану анімації
