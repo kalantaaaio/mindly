@@ -226,14 +226,23 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // Перераховуємо зони для всіх кульок при зміні розміру
       this.ballData.forEach((ball, index) => {
-        const { zone } = this.calculateInitialPosition(index, this.ballData.length, ball.radius);
+        const { zone } = this.calculateInitialPosition(
+          index,
+          this.ballData.length,
+          ball.radius
+        );
         ball.zone = zone;
 
         // Перевіряємо, чи кулька не вийшла за межі нової зони
         const currentX = ball.x;
         const currentY = ball.y;
 
-        if (currentX < zone.minX || currentX > zone.maxX || currentY < zone.minY || currentY > zone.maxY) {
+        if (
+          currentX < zone.minX ||
+          currentX > zone.maxX ||
+          currentY < zone.minY ||
+          currentY > zone.maxY
+        ) {
           // Переміщуємо кульку в межі нової зони
           const newX = Math.max(zone.minX, Math.min(zone.maxX, currentX));
           const newY = Math.max(zone.minY, Math.min(zone.maxY, currentY));
@@ -248,7 +257,11 @@ document.addEventListener("DOMContentLoaded", () => {
       const totalBalls = this.balls.length;
 
       // Розраховуємо позицію для рівномірного розподілу
-      const { x, y, zone } = this.calculateInitialPosition(ballIndex, totalBalls, radius);
+      const { x, y, zone } = this.calculateInitialPosition(
+        ballIndex,
+        totalBalls,
+        radius
+      );
       gsap.set(ball, { xPercent: -50, yPercent: -50, x, y });
 
       const data = {
@@ -313,7 +326,7 @@ document.addEventListener("DOMContentLoaded", () => {
         minY: row * zoneHeight + padding + radius,
         maxY: (row + 1) * zoneHeight - padding - radius,
         centerX: zoneCenterX,
-        centerY: zoneCenterY
+        centerY: zoneCenterY,
       };
 
       // Перевіряємо, щоб початкова позиція була в межах зони
@@ -360,20 +373,22 @@ document.addEventListener("DOMContentLoaded", () => {
       if (distance === 0) return { x: 0, y: 0 };
 
       // Сила притягання зростає квадратично з відстанню від центру
-      const maxDistance = Math.min(
-        ball.zone.maxX - ball.zone.minX,
-        ball.zone.maxY - ball.zone.minY
-      ) / 2;
+      const maxDistance =
+        Math.min(
+          ball.zone.maxX - ball.zone.minX,
+          ball.zone.maxY - ball.zone.minY
+        ) / 2;
 
       const normalizedDistance = Math.min(distance / maxDistance, 1);
-      const attractionStrength = 0.005 * normalizedDistance * normalizedDistance; // м'яка квадратична сила
+      const attractionStrength =
+        0.005 * normalizedDistance * normalizedDistance; // м'яка квадратична сила
 
       const normalizedX = dx / distance;
       const normalizedY = dy / distance;
 
       return {
         x: normalizedX * attractionStrength,
-        y: normalizedY * attractionStrength
+        y: normalizedY * attractionStrength,
       };
     }
 
@@ -536,7 +551,8 @@ document.addEventListener("DOMContentLoaded", () => {
       const data = ballEl._ballData;
       if (data) {
         const angle = Math.random() * Math.PI * 2;
-        const speed = data.personalMinSpeed + Math.random() * this.speedVariation;
+        const speed =
+          data.personalMinSpeed + Math.random() * this.speedVariation;
         data.vx = Math.cos(angle) * speed;
         data.vy = Math.sin(angle) * speed;
         data.targetVx = data.vx;
@@ -972,6 +988,7 @@ document.addEventListener("DOMContentLoaded", () => {
       facesSwiper = new Swiper(".swiper.is--faces", {
         slidesPerView: "auto",
         spaceBetween: "5%",
+        slideToClickedSlide: true,
         centeredSlides: true,
         breakpoints: {
           320: {

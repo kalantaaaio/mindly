@@ -169,6 +169,7 @@ document.addEventListener("DOMContentLoaded", () => {
           swiper = new Swiper(swiperElement, {
             slidesPerView: "auto",
             spaceBetween: 12,
+            slideToClickedSlide: true,
           });
         }
       }
