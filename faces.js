@@ -988,7 +988,6 @@ document.addEventListener("DOMContentLoaded", () => {
       facesSwiper = new Swiper(".swiper.is--faces", {
         slidesPerView: "auto",
         spaceBetween: "5%",
-        slideToClickedSlide: true,
         centeredSlides: true,
         breakpoints: {
           320: {
