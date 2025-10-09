@@ -130,7 +130,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const wrapper = document.querySelector(wrpClass);
     const cards = wrapper.querySelectorAll(cardsClass);
 
-    gsap.set(cards, { opacity: 0, y: 30 });
+    gsap.set(cards, { opacity: 0, y: 50 });
     let mm = gsap.matchMedia();
     mm.add("(min-width: 992px)", () => {
       let cardsTl = gsap.timeline({ paused: true });
@@ -138,7 +138,7 @@ document.addEventListener("DOMContentLoaded", () => {
         opacity: 1,
         y: 0,
         duration: 0.75,
-        stagger: 0.1,
+        stagger: 0.15,
       });
       let st = ScrollTrigger.create({
         trigger: wrapper,
@@ -205,12 +205,15 @@ document.addEventListener("DOMContentLoaded", () => {
   lineAppear(".swiper.is--prof");
   lineAppear(".pricing_contain");
   lineAppear(".press_contain");
-  lineAppear(".swiper.is-voice-main");
   lineAppear(".swiper.is--voice-small");
   lineAppear(".swiper.is--marquee");
   lineAppear(".swiper.is--rating");
   lineAppear(".cta_contain");
 
   cardsStaggerAppear(".swiper-wrapper.blog_contain", ".swiper-slide.blog_item");
+  cardsStaggerAppear(
+    ".swiper-wrapper.is-voice-main",
+    ".swiper-slide.is-voice-main"
+  );
   cardsStaggerAppear(".faq_items", ".faq_item");
 });
