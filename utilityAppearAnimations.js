@@ -130,9 +130,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const wrapper = document.querySelector(wrpClass);
     const cards = wrapper.querySelectorAll(cardsClass);
 
-    // Перевіряємо чи це advantages_card
-    const isAdvantagesCard = cardsClass === ".advantages_card";
-
     gsap.set(cards, { opacity: 0, y: 30 });
     let mm = gsap.matchMedia();
     mm.add("(min-width: 992px)", () => {
@@ -159,13 +156,8 @@ document.addEventListener("DOMContentLoaded", () => {
       cards.forEach((card) => {
         let cardsTl = gsap.timeline({ paused: true });
 
-        // Для advantages_card на мобілці ставимо opacity: 1 одразу
-        if (isAdvantagesCard) {
-          gsap.set(card, { opacity: 1 });
-        }
-
         cardsTl.to(card, {
-          opacity: isAdvantagesCard ? 1 : 1, // для advantages_card opacity не змінюється
+          opacity: 1,
           y: 0,
           duration: 0.75,
         });
