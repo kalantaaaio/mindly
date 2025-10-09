@@ -142,14 +142,17 @@ const TextAnimations = {
 
 document.addEventListener("DOMContentLoaded", () => {
   const start = "top 90%";
+  const yOffsetDesktop = 50;
+  const yOffsetMobile = 30;
 
   function cardsStaggerAppear(wrpClass, cardsClass) {
     const wrapper = document.querySelector(wrpClass);
     const cards = wrapper.querySelectorAll(cardsClass);
 
-    gsap.set(cards, { opacity: 0, y: 50 });
     let mm = gsap.matchMedia();
+
     mm.add("(min-width: 992px)", () => {
+      gsap.set(cards, { opacity: 0, y: yOffsetDesktop });
       let cardsTl = gsap.timeline({ paused: true });
       cardsTl.to(cards, {
         opacity: 1,
@@ -168,7 +171,9 @@ document.addEventListener("DOMContentLoaded", () => {
         gsap.set(cards, { clearProps: "all" });
       };
     });
+
     mm.add("(max-width: 991.98px)", () => {
+      gsap.set(cards, { opacity: 0, y: yOffsetMobile });
       let instances = [];
       cards.forEach((card) => {
         let cardsTl = gsap.timeline({ paused: true });
@@ -199,17 +204,46 @@ document.addEventListener("DOMContentLoaded", () => {
     const lineApps = document.querySelectorAll(line);
 
     lineApps.forEach((lineApp) => {
-      gsap.set(lineApp, { opacity: 0, y: 50 });
-      let lineTl = gsap.timeline({ paused: true });
-      lineTl.to(lineApp, {
-        opacity: 1,
-        y: 0,
-        duration: 0.75,
+      let mm = gsap.matchMedia();
+
+      mm.add("(min-width: 768px)", () => {
+        gsap.set(lineApp, { opacity: 0, y: yOffsetDesktop });
+        let lineTl = gsap.timeline({ paused: true });
+        lineTl.to(lineApp, {
+          opacity: 1,
+          y: 0,
+          duration: 0.75,
+        });
+        let st = ScrollTrigger.create({
+          trigger: lineApp,
+          start: start,
+          onEnter: () => lineTl.play(),
+        });
+        return () => {
+          st.kill();
+          lineTl.kill();
+          gsap.set(lineApp, { clearProps: "all" });
+        };
       });
-      let st = ScrollTrigger.create({
-        trigger: lineApp,
-        start: start,
-        onEnter: () => lineTl.play(),
+
+      mm.add("(max-width: 767.98px)", () => {
+        gsap.set(lineApp, { opacity: 0, y: yOffsetMobile });
+        let lineTl = gsap.timeline({ paused: true });
+        lineTl.to(lineApp, {
+          opacity: 1,
+          y: 0,
+          duration: 0.75,
+        });
+        let st = ScrollTrigger.create({
+          trigger: lineApp,
+          start: start,
+          onEnter: () => lineTl.play(),
+        });
+        return () => {
+          st.kill();
+          lineTl.kill();
+          gsap.set(lineApp, { clearProps: "all" });
+        };
       });
     });
   }
