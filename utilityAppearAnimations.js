@@ -124,7 +124,7 @@ const TextAnimations = {
 };
 
 document.addEventListener("DOMContentLoaded", () => {
-  const start = "top 80%";
+  const start = "top 90%";
 
   function cardsStaggerAppear(wrpClass, cardsClass) {
     const wrapper = document.querySelector(wrpClass);
