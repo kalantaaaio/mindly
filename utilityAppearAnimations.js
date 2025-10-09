@@ -40,15 +40,31 @@ function storeSplitInstance(element, splitInstance) {
 // Хелпер для створення анімації - DRY principle
 function createSplitAnimation(element, config) {
   const split = SplitText.create(element, {
-    type: config.type,
+    type: config.type, // тепер може бути "words,chars"
     mask: config.mask,
-    [`${config.type}Class`]: `split-${config.type.slice(0, -1)}`,
+    wordsClass: "split-word",
+    charsClass: "split-char",
+    linesClass: "split-line",
     autoSplit: true,
   });
 
   storeSplitInstance(element, split);
 
-  const targets = split[config.type];
+  // Визначаємо, які елементи анімувати
+  const targets =
+    config.animateTarget === "chars"
+      ? split.chars
+      : config.animateTarget === "words"
+      ? split.words
+      : config.animateTarget === "lines"
+      ? split.lines
+      : split[
+          config.type
+            .replace(",", "")
+            .replace("words", "")
+            .replace("lines", "") || "chars"
+        ];
+
   gsap.set(targets, config.from);
   gsap.to(targets, {
     ...config.to,
@@ -64,7 +80,8 @@ function createSplitAnimation(element, config) {
 // 📚 БІБЛІОТЕКА АНІМАЦІЙ - легко додавати/видаляти
 const animationPresets = {
   "letters-blur": {
-    type: "chars",
+    type: "words,chars", // 👈 КЛЮЧОВА ЗМІНА: розбиваємо на слова І чари
+    animateTarget: "chars", // 👈 але анімуємо тільки чари
     from: { opacity: 0, filter: "blur(5px)" },
     to: {
       opacity: 1,
