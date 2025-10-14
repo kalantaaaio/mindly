@@ -353,7 +353,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const firstSlideObserver = new IntersectionObserver(
     (entries) => {
       entries.forEach((entry) => {
-        if (entry.isIntersecting && entry.intersectionRatio >= 0.4) {
+        if (entry.isIntersecting && entry.intersectionRatio >= 0.1) {
           const slideId = entry.target.id;
 
           if (slideId && !renderedChats.has(slideId)) {
@@ -367,7 +367,7 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     },
     {
-      threshold: [0.4], // Запускається коли слайд видимий на 40%
+      threshold: [0.1], // Запускається коли слайд видимий на 40%
     }
   );
 
@@ -408,5 +408,5 @@ document.addEventListener("DOMContentLoaded", () => {
         });
       }
     });
-  }, 100);
+  }, 10);
 });
