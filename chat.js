@@ -364,31 +364,35 @@ document.addEventListener("DOMContentLoaded", () => {
   setTimeout(() => {
     const slides = document.querySelectorAll(".swiper-slide");
 
-    // Спочатку перевіряємо, чи є активний слайд при завантаженні та у viewport
-    slides.forEach((slide) => {
-      if (slide.classList.contains("swiper-slide-active")) {
-        const slideId = slide.id;
-        if (slideId && !renderedChats.has(slideId)) {
-          // Перевіряємо видимість у viewport
-          const rect = slide.getBoundingClientRect();
-          const isInViewport = rect.top < window.innerHeight && rect.bottom > 0;
-
-          if (isInViewport) {
-            const chat = chats[slideId];
-            if (chat) {
-              chat.render();
-              renderedChats.add(slideId);
-            }
-          }
-        }
-      }
-    });
-
-    // Потім додаємо observers
+    // Додаємо observers
     slides.forEach((slide, index) => {
       if (index === 0) {
-        // Перший слайд спостерігаємо за допомогою Intersection Observer
-        firstSlideObserver.observe(slide);
+        // Перший слайд спостерігаємо за допомогою ScrollTrigger
+        ScrollTrigger.create({
+          trigger: slide,
+          markers: true,
+          start: "top 90%",
+          onEnter: () => {
+            if (slide.classList.contains("swiper-slide-active")) {
+              renderChatForSlide(slide.id);
+            }
+          },
+          onEnterBack: () => {
+            if (slide.classList.contains("swiper-slide-active")) {
+              renderChatForSlide(slide.id);
+            }
+          },
+        });
+
+        // Перевіряємо одразу при завантаженні
+        if (slide.classList.contains("swiper-slide-active")) {
+          const rect = slide.getBoundingClientRect();
+          const isInViewport =
+            rect.top < window.innerHeight * 0.9 && rect.bottom > 0;
+          if (isInViewport) {
+            renderChatForSlide(slide.id);
+          }
+        }
       } else {
         // Інші слайди спостерігаємо за допомогою Mutation Observer
         observer.observe(slide, {
