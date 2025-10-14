@@ -3,7 +3,6 @@ document.addEventListener("DOMContentLoaded", () => {
     slidesPerView: "auto",
     centeredSlides: true,
     slideToClickedSlide: true,
-    noSwipingClass: "journey_slide-chat",
     breakpoints: {
       320: {
         spaceBetween: 8,
