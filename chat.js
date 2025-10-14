@@ -161,7 +161,7 @@ document.addEventListener("DOMContentLoaded", () => {
           top: this.chatContainer.scrollHeight,
           behavior: "smooth",
         });
-      }, 50);
+      }, 1);
     }
 
     render() {
@@ -169,24 +169,26 @@ document.addEventListener("DOMContentLoaded", () => {
 
       this.messages.forEach((message, index) => {
         // Перше повідомлення без затримки (index === 0)
-        const delay = index === 0 ? 0 : 1500 + (index - 1) * 1500;
+        const delay = index === 0 ? 0 : 1000 + (index - 1) * 1000;
 
         setTimeout(() => {
           const messageElement = message.render();
           if (messageElement) {
-            // Анімація fade-in для всього блоку
-            messageElement.style.opacity = "0";
-            messageElement.style.transform = "translateY(20px)";
-            messageElement.style.transition = "all 0.5s ease";
-
+            // Додаємо новий елемент
             this.chatContainer.appendChild(messageElement);
 
-            // Запускаємо анімацію
-            setTimeout(() => {
-              messageElement.style.opacity = "1";
-              messageElement.style.transform = "translateY(0)";
-              this.scrollToBottom();
-            }, 50);
+            // Анімуємо через GSAP
+            gsap.fromTo(
+              messageElement,
+              { opacity: 0, y: 30 },
+              {
+                opacity: 1,
+                y: 0,
+                duration: 0.5,
+                ease: "power2.out",
+                onComplete: () => this.scrollToBottom(),
+              }
+            );
           }
         }, delay);
       });
@@ -372,6 +374,28 @@ document.addEventListener("DOMContentLoaded", () => {
   // Запускаємо Observer для всіх слайдів після невеликої затримки
   setTimeout(() => {
     const slides = document.querySelectorAll(".swiper-slide");
+
+    // Спочатку перевіряємо, чи є активний слайд при завантаженні та у viewport
+    slides.forEach((slide) => {
+      if (slide.classList.contains("swiper-slide-active")) {
+        const slideId = slide.id;
+        if (slideId && !renderedChats.has(slideId)) {
+          // Перевіряємо видимість у viewport
+          const rect = slide.getBoundingClientRect();
+          const isInViewport = rect.top < window.innerHeight && rect.bottom > 0;
+
+          if (isInViewport) {
+            const chat = chats[slideId];
+            if (chat) {
+              chat.render();
+              renderedChats.add(slideId);
+            }
+          }
+        }
+      }
+    });
+
+    // Потім додаємо observers
     slides.forEach((slide, index) => {
       if (index === 0) {
         // Перший слайд спостерігаємо за допомогою Intersection Observer
