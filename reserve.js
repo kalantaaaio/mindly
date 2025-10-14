@@ -3954,3 +3954,240 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 });
+
+document.addEventListener("DOMContentLoaded", () => {
+  const sliderButtons = document.querySelectorAll(".slider-prof-btn");
+  const bigVideoWrapper = document.querySelector(".big_video-wrp");
+
+  // Додаємо обробники подій для кнопок
+  sliderButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      // Показуємо відео при кліку на будь-яку кнопку
+      if (bigVideoWrapper) {
+        bigVideoWrapper.style.display = "flex";
+      }
+    });
+  });
+
+  // Додаємо обробник події для закриття відео
+  if (bigVideoWrapper) {
+    bigVideoWrapper.addEventListener("click", (event) => {
+      // Перевіряємо чи клік був НЕ по .big_video-border
+      const videoBorder = bigVideoWrapper.querySelector(".big_video-border");
+
+      if (
+        videoBorder &&
+        (event.target === videoBorder || videoBorder.contains(event.target))
+      ) {
+        // Не закриваємо відео
+        return;
+      }
+
+      if (
+        event.target === bigVideoWrapper ||
+        (bigVideoWrapper.contains(event.target) &&
+          (!videoBorder ||
+            (!videoBorder.contains(event.target) &&
+              event.target !== videoBorder)))
+      ) {
+        bigVideoWrapper.style.display = "none";
+      }
+    });
+  }
+});
+
+function setupTestimonialsMarquee(selector) {
+  const marquees = Array.from(document.querySelectorAll(selector));
+  if (!marquees.length) return;
+
+  let swiper = null;
+  let resizeTimeout = null;
+  let marqueeWrappers = [];
+  let intersectionObservers = [];
+  let isHovered = [];
+  let isInView = [];
+
+  function debounce(func, delay) {
+    return function () {
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(func, delay);
+    };
+  }
+
+  // Функція очищення marquee
+  function cleanupMarquee() {
+    intersectionObservers.forEach((observer) => {
+      if (observer) observer.disconnect();
+    });
+    intersectionObservers = [];
+
+    // Видаляємо клоновані wrapper'и
+    marqueeWrappers.forEach((wrappers, marqueeIndex) => {
+      wrappers.forEach((wrapper, index) => {
+        if (index > 0) {
+          wrapper.remove();
+        }
+      });
+
+      // Очищаємо стилі оригінального wrapper'а
+      const originalWrapper =
+        marquees[marqueeIndex]?.querySelector(".swiper-wrapper");
+      if (originalWrapper) {
+        originalWrapper.style.animation = "";
+        originalWrapper.style.animationPlayState = "";
+      }
+    });
+
+    marqueeWrappers = [];
+    marquees.forEach((marquee) =>
+      marquee.classList.remove("is-marquee-active")
+    );
+  }
+
+  // Функція ініціалізації marquee для великих екранів
+  function initMarquee() {
+    marquees.forEach((marqueeElement, marqueeIndex) => {
+      const swiperWrapper = marqueeElement.querySelector(".swiper-wrapper");
+      if (!swiperWrapper) return;
+
+      marqueeElement.classList.add("is-marquee-active");
+
+      // Дублюємо wrapper для ефекту marquee
+      const clonedWrapper = swiperWrapper.cloneNode(true);
+      marqueeElement.appendChild(clonedWrapper);
+
+      const wrappers = [swiperWrapper, clonedWrapper];
+
+      // Для екранів 1920px+ додаємо третій дублікат
+      if (window.innerWidth >= 1920) {
+        const thirdWrapper = swiperWrapper.cloneNode(true);
+        marqueeElement.appendChild(thirdWrapper);
+        wrappers.push(thirdWrapper);
+      }
+
+      // Визначаємо напрямок анімації (непарні marquees йдуть у зворотному напрямку)
+      const isReversed = marqueeIndex % 2 === 1;
+      const animationName = isReversed ? "marquee-reversed" : "marquee";
+
+      // Додаємо анімацію
+      wrappers.forEach((wrapper) => {
+        wrapper.style.animation = `${animationName} 90s linear infinite`;
+      });
+
+      marqueeWrappers[marqueeIndex] = wrappers;
+
+      // Функція контролю стану анімації
+      const updateAnimationState = () => {
+        const shouldPlay = isInView[marqueeIndex] && !isHovered[marqueeIndex];
+        wrappers.forEach((wrapper) => {
+          wrapper.style.animationPlayState = shouldPlay ? "running" : "paused";
+        });
+      };
+
+      // Hover pause
+      marqueeElement.addEventListener("mouseenter", () => {
+        isHovered[marqueeIndex] = true;
+        updateAnimationState();
+      });
+
+      marqueeElement.addEventListener("mouseleave", () => {
+        isHovered[marqueeIndex] = false;
+        updateAnimationState();
+      });
+
+      // Intersection Observer для видимості у viewport
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            isInView[marqueeIndex] = entry.isIntersecting;
+            updateAnimationState();
+          });
+        },
+        { threshold: 0.1 }
+      );
+
+      observer.observe(marqueeElement);
+      intersectionObservers[marqueeIndex] = observer;
+    });
+  }
+
+  // Функція для малих екранів: переміщення всіх слайдів в перший marquee
+  function initMobileSwiper() {
+    const firstMarquee = marquees[0];
+    if (!firstMarquee) return;
+
+    const firstWrapper = firstMarquee.querySelector(".swiper-wrapper");
+    if (!firstWrapper) return;
+
+    // Переносимо всі slides з інших marquees в перший
+    marquees.forEach((marquee, index) => {
+      if (index === 0) return;
+
+      const wrapper = marquee.querySelector(".swiper-wrapper");
+      if (!wrapper) return;
+
+      const slides = Array.from(wrapper.querySelectorAll(".swiper-slide"));
+      slides.forEach((slide) => {
+        firstWrapper.appendChild(slide);
+      });
+
+      // Видаляємо інші marquees
+      marquee.remove();
+    });
+
+    // Ініціалізуємо Swiper на першому marquee
+    if (!swiper) {
+      swiper = new Swiper(firstMarquee, {
+        slidesPerView: "auto",
+        spaceBetween: 12,
+        centeredSlides: true,
+      });
+    }
+  }
+
+  // Головна функція обробки
+  function handleSlider() {
+    if (window.innerWidth >= 992) {
+      // Великі екрани: marquee
+      if (swiper) {
+        swiper.destroy(true, true);
+        swiper = null;
+      }
+      if (marqueeWrappers.length === 0) {
+        initMarquee();
+      }
+    } else {
+      // Малі екрани: swiper
+      cleanupMarquee();
+      if (!swiper) {
+        initMobileSwiper();
+      }
+    }
+  }
+
+  // Ініціалізація при завантаженні
+  handleSlider();
+
+  // ResizeObserver з debounce
+  const resizeObserver = new ResizeObserver(
+    debounce(() => {
+      handleSlider();
+    }, 250)
+  );
+
+  resizeObserver.observe(document.body);
+
+  // Cleanup функція
+  return () => {
+    resizeObserver.disconnect();
+    cleanupMarquee();
+    if (swiper) {
+      swiper.destroy(true, true);
+    }
+  };
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  setupTestimonialsMarquee(".swiper.is--marquee");
+  setupTestimonialsMarquee(".swiper.is--rating");
+});
