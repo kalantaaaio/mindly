@@ -362,15 +362,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Запускаємо Observer для всіх слайдів після невеликої затримки
   setTimeout(() => {
-    const slides = document.querySelectorAll(".swiper-slide");
+    const slides = document.querySelectorAll(".swiper-slide.is--journey");
 
     // Додаємо observers
     slides.forEach((slide, index) => {
+      // Всі слайди спостерігаємо за допомогою Mutation Observer
+      observer.observe(slide, {
+        attributes: true,
+        attributeFilter: ["class"],
+      });
+
       if (index === 0) {
-        // Перший слайд спостерігаємо за допомогою ScrollTrigger
+        // Для першого слайду додатково використовуємо ScrollTrigger
+        const swiperContainer = slide.closest(".swiper.is--journey");
+
         ScrollTrigger.create({
-          trigger: slide,
-          markers: true,
+          trigger: swiperContainer,
           start: "top 90%",
           onEnter: () => {
             if (slide.classList.contains("swiper-slide-active")) {
@@ -382,24 +389,31 @@ document.addEventListener("DOMContentLoaded", () => {
               renderChatForSlide(slide.id);
             }
           },
+          onRefresh: () => {
+            if (slide.classList.contains("swiper-slide-active")) {
+              const rect = swiperContainer.getBoundingClientRect();
+              const isInViewport =
+                rect.top < window.innerHeight * 0.9 && rect.bottom > 0;
+              if (isInViewport) {
+                renderChatForSlide(slide.id);
+              }
+            }
+          },
         });
 
         // Перевіряємо одразу при завантаженні
         if (slide.classList.contains("swiper-slide-active")) {
-          const rect = slide.getBoundingClientRect();
+          const rect = swiperContainer.getBoundingClientRect();
           const isInViewport =
             rect.top < window.innerHeight * 0.9 && rect.bottom > 0;
           if (isInViewport) {
             renderChatForSlide(slide.id);
           }
         }
-      } else {
-        // Інші слайди спостерігаємо за допомогою Mutation Observer
-        observer.observe(slide, {
-          attributes: true,
-          attributeFilter: ["class"],
-        });
       }
     });
+
+    // Оновлюємо ScrollTrigger після ініціалізації
+    ScrollTrigger.refresh();
   }, 10);
 });
