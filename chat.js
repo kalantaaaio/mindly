@@ -349,27 +349,16 @@ document.addEventListener("DOMContentLoaded", () => {
     "slide-2": chat2,
   };
 
-  // Intersection Observer для першого слайду
-  const firstSlideObserver = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting && entry.intersectionRatio >= 0.1) {
-          const slideId = entry.target.id;
-
-          if (slideId && !renderedChats.has(slideId)) {
-            const chat = chats[slideId];
-            if (chat) {
-              chat.render();
-              renderedChats.add(slideId);
-            }
-          }
-        }
-      });
-    },
-    {
-      threshold: [0.1], // Запускається коли слайд видимий на 40%
+  // Функція для рендерингу чату для слайду
+  function renderChatForSlide(slideId) {
+    if (slideId && !renderedChats.has(slideId)) {
+      const chat = chats[slideId];
+      if (chat) {
+        chat.render();
+        renderedChats.add(slideId);
+      }
     }
-  );
+  }
 
   // Запускаємо Observer для всіх слайдів після невеликої затримки
   setTimeout(() => {
