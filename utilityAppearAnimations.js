@@ -71,7 +71,7 @@ function createSplitAnimation(element, config) {
     scrollTrigger: {
       trigger: element,
       start: config.start || "top 60%",
-      toggleActions: config.toggleActions || "play none none reverse",
+      toggleActions: config.toggleActions || "play none none none",
       ...config.scrollTrigger,
     },
   });
