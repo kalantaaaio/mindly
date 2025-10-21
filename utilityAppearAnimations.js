@@ -70,7 +70,7 @@ function createSplitAnimation(element, config) {
     ...config.to,
     scrollTrigger: {
       trigger: element,
-      start: config.start || "top 60%",
+      start: config.start || "top 90%",
       toggleActions: config.toggleActions || "play none none none",
       ...config.scrollTrigger,
     },
