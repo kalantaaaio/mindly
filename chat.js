@@ -254,39 +254,39 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Створення персонажів
   Charakter.create(
-    "aleksandra",
-    "Aleksandra",
+    "emily",
+    "Emily",
     "Patient",
     "left",
-    "https://cdn.prod.website-files.com/68b70312e022b8d32af2cf34/68c3297e57003d1eb8c5cc60_Avatar-Aleksandra.avif",
+    "https://cdn.prod.website-files.com/68b70312e022b8d32af2cf34/68f7aa5aeea968ed26cd676d_Avatar-Aleksandra.webp",
     "https://cdn.prod.website-files.com/68b70312e022b8d32af2cf34/68c415c9add6a68f722df3bd_Vector%2024%20(2).svg",
     "#0288D1"
   );
 
   Charakter.create(
-    "marek",
-    "Dr. Marek Nowak",
-    "Psychiatrist",
+    "sarah",
+    "Dr. Sarah Mitchell",
+    "Therapist",
     "right",
-    "https://cdn.prod.website-files.com/68b70312e022b8d32af2cf34/68c4156fdc90bce712fce6fd_Avatar-Marek.avif",
+    "https://cdn.prod.website-files.com/68b70312e022b8d32af2cf34/68f7aa6fdb2b0a7f1ae673fc_Avatar-Marek.webp",
     "https://cdn.prod.website-files.com/68b70312e022b8d32af2cf34/68c415c9539cce511eb79f45_Vector%2024%20(1).svg",
     "#02B286"
   );
   Charakter.create(
-    "magda",
-    "Dr. Magda Kvasneski",
+    "james",
+    "Dr. James Carter",
     "Psychotherapist",
     "right",
-    "https://cdn.prod.website-files.com/68b70312e022b8d32af2cf34/68c4156f131503c8fa39d66f_Avatar-Marek%20(1).avif",
+    "https://cdn.prod.website-files.com/68b70312e022b8d32af2cf34/68f7aa6f3df539b3fbeb8f3a_Avatar-Marek-1.webp",
     "https://cdn.prod.website-files.com/68b70312e022b8d32af2cf34/68c415c920184e022fc14a9c_Vector%2026.svg",
     "#DEB54F"
   );
   Charakter.create(
-    "paulina",
-    "Paulina Romazski",
+    "rachel",
+    "Rachel Nguyen",
     "Psychologist",
     "right",
-    "https://cdn.prod.website-files.com/68b70312e022b8d32af2cf34/68c4156f850ef071a5ec4940_Avatar-Marek%20(2).avif",
+    "https://cdn.prod.website-files.com/68b70312e022b8d32af2cf34/68f7aa6f4df3bf9050169455_Avatar-Marek-2.webp",
     "https://cdn.prod.website-files.com/68b70312e022b8d32af2cf34/68c415c986a55a34642101e1_Vector%2028.svg",
     "#CD8DF7"
   );
@@ -294,62 +294,69 @@ document.addEventListener("DOMContentLoaded", () => {
   // Створюємо всі чати
   const chat1 = new Chat("#slide-1");
   const chat2 = new Chat("#slide-2");
+  const chat3 = new Chat("#slide-3");
 
   // Додаємо повідомлення до чатів
   chat1.message(
-    "aleksandra",
-    "I had my first session later that day. Magda helped me see patterns I never noticed. She also suggested I talk to a psychiatrist to help the process."
+    "emily",
+    "I wasn’t just anxious—I was scared of being scared. Every day felt like survival, and I didn’t know how much longer I could do it."
   );
   chat1.message(
-    "marek",
-    "In intense anxiety cases, short-term medication can make therapy more effective."
+    "emily",
+    'I tried mindfulness apps. Read self-help blogs. Nothing stuck. What I needed was real help—not another suggestion to "just breathe".'
   );
   chat1.message(
-    "aleksandra",
-    "By week three, the panic attacks stopped. It felt like I was getting pieces of myself back"
-  );
-  chat1.message(
-    "magda",
-    "Once the storms calmed, we focused on tools—how to recognize early signals, how to respond instead of react."
-  );
-  chat1.message(
-    "aleksandra",
-    `After two months, I didn't need meds anymore. That's when I started sessions with Paulina to build habits that would last.`
-  );
-  chat1.message(
-    "paulina",
-    "My role was helping Aleksandra strengthen the foundation—so stress wouldn't undo her progress."
+    "sarah",
+    "When Emily came to Mindly, she was in survival mode. Our first step was simply creating a space where she felt safe enough to begin our journey."
   );
 
   chat2.message(
-    "aleksandra",
-    "I had my first session later that day. Magda helped me see patterns I never noticed. She also suggested I talk to a psychiatrist to help the process."
+    "emily",
+    "I had my first session later that day. Sarah helped me see patterns I never noticed. She also suggested I talk to a psychiatrist to help the process"
   );
   chat2.message(
-    "marek",
-    "In intense anxiety cases, short-term medication can make therapy more effective."
+    "james",
+    "In intense anxiety cases, short-term medication can make therapy more effective"
   );
   chat2.message(
-    "aleksandra",
+    "emily",
     "By week three, the panic attacks stopped. It felt like I was getting pieces of myself back"
   );
   chat2.message(
-    "magda",
-    "Once the storms calmed, we focused on tools—how to recognize early signals, how to respond instead of react."
+    "sarah",
+    "Once the storms calmed, we focused on tools—how to recognize early signals, how to respond instead of react"
   );
   chat2.message(
-    "aleksandra",
-    `After two months, I didn't need meds anymore. That's when I started sessions with Paulina to build habits that would last.`
+    "emily",
+    "After two months, I didn’t need medication anymore. That’s when I started sessions with Rachel to build lasting habits"
   );
   chat2.message(
-    "paulina",
-    "My role was helping Aleksandra strengthen the foundation—so stress wouldn't undo her progress."
+    "rachel",
+    "My role was to help Emily strengthen the foundation—so that stress wouldn’t undo her progress"
+  );
+
+  chat3.message(
+    "emily",
+    "A few months ago, panic attacks ruled my life. Now, I feel steady, strong, and calm. I have tools that actually work—and I know Mindly is there the moment I need support."
+  );
+  chat3.message(
+    "sarah",
+    "When Emily first came to Mindly, she was overwhelmed and terrified. Now, she’s grounded, confident, and in control—this is what real progress looks like"
+  );
+  chat3.message(
+    "james",
+    "Medication gave her the initial relief she needed to break the panic cycle. But she no longer needs it—her stability today comes from her own strength and structured care."
+  );
+  chat3.message(
+    "rachel",
+    "Together, we focused on building lasting strategies. She doesn’t rely on sessions to stay balanced—she carries the tools with her, and uses them with real clarity."
   );
 
   // Створюємо об'єкт для зручного доступу до чатів за ID слайда
   const chats = {
     "slide-1": chat1,
     "slide-2": chat2,
+    "slide-3": chat3,
   };
 
   // Функція для рендерингу чату для слайду
