@@ -9,6 +9,8 @@ document.addEventListener("DOMContentLoaded", () => {
       },
       768: {
         spaceBetween: 20,
+        centeredSlides: false,
+        slidesOffsetAfter: 20,
       },
     },
   });
