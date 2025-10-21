@@ -221,7 +221,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       messageDiv.innerHTML = `
         <div class="journey_slide-msg" style="background-color: ${character.color}">
-          <p class="text-13">${this.text}</p>
+          <p class="text-14">${this.text}</p>
           <img
             src="${character.arrow}"
             loading="lazy"
