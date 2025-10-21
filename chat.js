@@ -14,75 +14,78 @@ document.addEventListener("DOMContentLoaded", () => {
     },
   });
   const slideToggles = document.querySelectorAll(".journey-slide-nav_item");
-  slideToggles[0].classList.add("is-active");
 
-  // Отримуємо фоновий елемент
-  let backgroundElement = document.querySelector(
-    ".journey-slide-nav_item.is-active .journey-slide-nav_item-bg"
-  );
+  if (slideToggles && slideToggles.length > 0) {
+    slideToggles[0].classList.add("is-active");
 
-  // Функція для анімації переходу між тогглами
-  function animateToggleTransition(fromToggle, toToggle) {
-    if (fromToggle === toToggle) return;
+    // Отримуємо фоновий елемент
+    let backgroundElement = document.querySelector(
+      ".journey-slide-nav_item.is-active .journey-slide-nav_item-bg"
+    );
 
-    // Знаходимо індекси та напрямок
-    const currentIndex = Array.from(slideToggles).indexOf(fromToggle);
-    const newIndex = Array.from(slideToggles).indexOf(toToggle);
+    // Функція для анімації переходу між тогглами
+    function animateToggleTransition(fromToggle, toToggle) {
+      if (fromToggle === toToggle) return;
 
-    // Створюємо timeline
-    const tl = gsap.timeline();
+      // Знаходимо індекси та напрямок
+      const currentIndex = Array.from(slideToggles).indexOf(fromToggle);
+      const newIndex = Array.from(slideToggles).indexOf(toToggle);
 
-    slideToggles.forEach((t) => {
-      t.classList.remove("is-active");
-    });
-    toToggle.classList.add("is-active");
-  }
+      // Створюємо timeline
+      const tl = gsap.timeline();
 
-  // Обробник кліків на тогли
-  slideToggles.forEach((toggle) => {
-    toggle.addEventListener("click", () => {
-      const currentActive = document.querySelector(
-        ".journey-slide-nav_item.is-active"
-      );
-
-      if (currentActive === toggle) return;
-
-      // Запускаємо анімацію
-      animateToggleTransition(currentActive, toggle);
-
-      // Логіка для свайпера
-      const slideTo = toggle.dataset.slide;
-      const targetSlide = document.getElementById(slideTo);
-      const slideIndex = Array.from(swiper.slides).indexOf(targetSlide);
-      if (slideIndex !== -1) {
-        swiper.slideTo(slideIndex);
-      }
-    });
-  });
-
-  // Додаємо обробник для Swiper slideChange
-  swiper.on("slideChange", function () {
-    const activeSlideIndex = swiper.activeIndex;
-    const activeSlide = swiper.slides[activeSlideIndex];
-
-    // Знаходимо відповідний тоггл для активного слайда
-    const targetToggle = Array.from(slideToggles).find((toggle) => {
-      const slideTo = toggle.dataset.slide;
-      const targetSlide = document.getElementById(slideTo);
-      return targetSlide === activeSlide;
-    });
-
-    if (targetToggle) {
-      const currentActive = document.querySelector(
-        ".journey-slide-nav_item.is-active"
-      );
-
-      // Запускаємо анімацію тільки якщо це інший тоггл
-      if (currentActive !== targetToggle) {
-        animateToggleTransition(currentActive, targetToggle);
-      }
+      slideToggles.forEach((t) => {
+        t.classList.remove("is-active");
+      });
+      toToggle.classList.add("is-active");
     }
-  });
+
+    // Обробник кліків на тогли
+    slideToggles.forEach((toggle) => {
+      toggle.addEventListener("click", () => {
+        const currentActive = document.querySelector(
+          ".journey-slide-nav_item.is-active"
+        );
+
+        if (currentActive === toggle) return;
+
+        // Запускаємо анімацію
+        animateToggleTransition(currentActive, toggle);
+
+        // Логіка для свайпера
+        const slideTo = toggle.dataset.slide;
+        const targetSlide = document.getElementById(slideTo);
+        const slideIndex = Array.from(swiper.slides).indexOf(targetSlide);
+        if (slideIndex !== -1) {
+          swiper.slideTo(slideIndex);
+        }
+      });
+    });
+
+    // Додаємо обробник для Swiper slideChange
+    swiper.on("slideChange", function () {
+      const activeSlideIndex = swiper.activeIndex;
+      const activeSlide = swiper.slides[activeSlideIndex];
+
+      // Знаходимо відповідний тоггл для активного слайда
+      const targetToggle = Array.from(slideToggles).find((toggle) => {
+        const slideTo = toggle.dataset.slide;
+        const targetSlide = document.getElementById(slideTo);
+        return targetSlide === activeSlide;
+      });
+
+      if (targetToggle) {
+        const currentActive = document.querySelector(
+          ".journey-slide-nav_item.is-active"
+        );
+
+        // Запускаємо анімацію тільки якщо це інший тоггл
+        if (currentActive !== targetToggle) {
+          animateToggleTransition(currentActive, targetToggle);
+        }
+      }
+    });
+  }
 
   // Об'єкт для відстеження, які чати вже були запущені
   const renderedChats = new Set();

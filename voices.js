@@ -3,7 +3,10 @@ console.log("ss");
 document.addEventListener("DOMContentLoaded", () => {
   function setupSliderMain() {
     const swiperElement = document.querySelector(".swiper.is-voice-main");
+    if (!swiperElement) return;
+
     const swiperWrapper = swiperElement.querySelector(".swiper-wrapper");
+    if (!swiperWrapper) return;
 
     let swiper = null;
     let resizeTimeout = null;
@@ -53,7 +56,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function setupSliderMarquee() {
     const swiperElement = document.querySelector(".swiper.is--voice-small");
+    if (!swiperElement) return;
+
     const swiperWrapper = swiperElement.querySelector(".swiper-wrapper");
+    if (!swiperWrapper) return;
 
     let swiper = null;
     let resizeTimeout = null;

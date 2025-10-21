@@ -147,7 +147,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function cardsStaggerAppear(wrpClass, cardsClass) {
     const wrapper = document.querySelector(wrpClass);
+    if (!wrapper) return;
+
     const cards = wrapper.querySelectorAll(cardsClass);
+    if (!cards || cards.length === 0) return;
 
     let mm = gsap.matchMedia();
 
