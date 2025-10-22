@@ -29,7 +29,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Початкові стани
     gsap.set(pcCircles, { opacity: 0 });
     gsap.set(tooltips, { rotate: 0, opacity: 0, y: 20 });
-    gsap.set(pcLines, { drawSVG: "0%" });
+    gsap.set(pcLines, { drawSVG: "0%", attr: { "stroke-dasharray": "6 6" } });
 
     const tl = gsap.timeline({ paused: true });
 
@@ -65,10 +65,10 @@ document.addEventListener("DOMContentLoaded", () => {
     // Початкові стани
     gsap.set(mobCircles, { opacity: 0 });
     gsap.set(tooltips, { rotate: 0, opacity: 0, y: 20 });
-    gsap.set(mobLines, { drawSVG: "0%" });
+    gsap.set(mobLines, { drawSVG: "0%", attr: { "stroke-dasharray": "6 6" } });
 
     // Для останньої лінії встановлюємо початковий стан "100% 100%" (не намальована)
-    gsap.set(mobLines[3], { drawSVG: "100% 100%" });
+    gsap.set(mobLines[3], { drawSVG: "100% 100%", attr: { "stroke-dasharray": "6 6" } });
 
     const tl = gsap.timeline({ paused: true });
 
