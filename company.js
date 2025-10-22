@@ -29,6 +29,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const numEl = card.querySelector(".text-num");
     const targetNum = parseInt(numEl.dataset.num);
 
+    // Визначаємо тривалість залежно від значення
+    const duration = targetNum < 10 ? 0.5 : 1;
+
     // Створюємо об'єкт для анімації
     const counter = { value: 0 };
 
@@ -36,7 +39,7 @@ document.addEventListener("DOMContentLoaded", () => {
     mm.add("(min-width: 992px)", () => {
       gsap.to(counter, {
         value: targetNum,
-        duration: 1,
+        duration: duration,
         ease: "power1.out",
         scrollTrigger: {
           trigger: companySection,
@@ -56,7 +59,7 @@ document.addEventListener("DOMContentLoaded", () => {
     mm.add("(max-width: 991px)", () => {
       gsap.to(counter, {
         value: targetNum,
-        duration: 2,
+        duration: duration,
         ease: "power1.out",
         scrollTrigger: {
           trigger: card,
