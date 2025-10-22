@@ -22,10 +22,6 @@ document.addEventListener("DOMContentLoaded", () => {
     "#pr-circle-1-mob, #pr-circle-2-mob, #pr-circle-3-mob, #pr-circle-4-mob"
   );
 
-  // Встановлюємо штрихові лінії
-  pcLines.forEach(line => line.setAttribute("stroke-dasharray", "6 6"));
-  mobLines.forEach(line => line.setAttribute("stroke-dasharray", "6 6"));
-
   let mm = gsap.matchMedia();
   let animationPlayed = false;
 
@@ -33,12 +29,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Початкові стани
     gsap.set(pcCircles, { opacity: 0 });
     gsap.set(tooltips, { rotate: 0, opacity: 0, y: 20 });
-
-    // Ініціалізуємо drawSVG з збереженням штрихів
-    pcLines.forEach(line => {
-      gsap.set(line, { drawSVG: "0%" });
-      line.style.strokeDasharray = "6 6";
-    });
+    gsap.set(pcLines, { drawSVG: "0%" });
 
     const tl = gsap.timeline({ paused: true });
 
@@ -74,16 +65,10 @@ document.addEventListener("DOMContentLoaded", () => {
     // Початкові стани
     gsap.set(mobCircles, { opacity: 0 });
     gsap.set(tooltips, { rotate: 0, opacity: 0, y: 20 });
+    gsap.set(mobLines, { drawSVG: "0%" });
 
-    // Ініціалізуємо drawSVG з збереженням штрихів
-    mobLines.forEach((line, index) => {
-      if (index === 3) {
-        gsap.set(line, { drawSVG: "100% 100%" });
-      } else {
-        gsap.set(line, { drawSVG: "0%" });
-      }
-      line.style.strokeDasharray = "6 6";
-    });
+    // Для останньої лінії встановлюємо початковий стан "100% 100%" (не намальована)
+    gsap.set(mobLines[3], { drawSVG: "100% 100%" });
 
     const tl = gsap.timeline({ paused: true });
 
