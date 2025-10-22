@@ -30,7 +30,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const targetNum = parseInt(numEl.dataset.num);
 
     // Визначаємо тривалість залежно від значення
-    const duration = targetNum < 10 ? 0.5 : 1;
+    const duration = targetNum < 10 ? 0.25 : 1;
 
     // Створюємо об'єкт для анімації
     const counter = { value: 0 };
