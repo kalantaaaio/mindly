@@ -173,8 +173,12 @@ document.addEventListener("DOMContentLoaded", () => {
         // Перше повідомлення без затримки (index === 0)
         const delay = index === 0 ? 0 : 1000 + (index - 1) * 1000;
 
+        // Перевіряємо, чи наступне повідомлення від того ж автора
+        const nextMessage = this.messages[index + 1];
+        const isLastInSequence = !nextMessage || nextMessage.characterId !== message.characterId;
+
         setTimeout(() => {
-          const messageElement = message.render();
+          const messageElement = message.render(isLastInSequence);
           if (messageElement) {
             // Додаємо новий елемент
             this.chatContainer.appendChild(messageElement);
@@ -207,7 +211,7 @@ document.addEventListener("DOMContentLoaded", () => {
       return Charakter.get(this.characterId);
     }
 
-    render() {
+    render(isLastInSequence = true) {
       const character = this.getCharacter();
       let classList = "journey_slide-msg-arrow";
       if (!character) return null;
@@ -219,18 +223,8 @@ document.addEventListener("DOMContentLoaded", () => {
         classList = "journey_slide-msg-arrow is--doctor";
       }
 
-      messageDiv.innerHTML = `
-        <div class="journey_slide-msg" style="background-color: ${character.color}">
-          <p class="text-14">${this.text}</p>
-          <img
-            src="${character.arrow}"
-            loading="lazy"
-            width="14"
-            height="9"
-            alt=""
-            class="${classList}"
-          />
-        </div>
+      // Формуємо HTML для автора тільки якщо це останнє повідомлення в послідовності
+      const authorHTML = isLastInSequence ? `
         <div class="journey_slide-text-athor">
           <img
             src="${character.photo}"
@@ -245,6 +239,21 @@ document.addEventListener("DOMContentLoaded", () => {
             <span class="text-14">${character.role}</span>
           </div>
         </div>
+      ` : '';
+
+      messageDiv.innerHTML = `
+        <div class="journey_slide-msg" style="background-color: ${character.color}">
+          <p class="text-14">${this.text}</p>
+          <img
+            src="${character.arrow}"
+            loading="lazy"
+            width="14"
+            height="9"
+            alt=""
+            class="${classList}"
+          />
+        </div>
+        ${authorHTML}
       `;
 
       return messageDiv;
