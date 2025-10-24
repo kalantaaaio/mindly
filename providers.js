@@ -79,24 +79,24 @@ document.addEventListener("DOMContentLoaded", () => {
     )
       .to(mobCircles[0], { opacity: 1, duration: 0.1 })
       .to(tooltips[0], { opacity: 1, y: 0, rotate: -3, duration: 0.3 })
-
+      .to(mobCircles[1], { opacity: 1, duration: 0.1 })
       .fromTo(
         mobLines[1],
         { drawSVG: "0%" },
         { drawSVG: "100%", duration: 0.3 }
       )
-      .to(mobCircles[1], { opacity: 1, duration: 0.1 })
+      .to(mobCircles[2], { opacity: 1, duration: 0.1 })
       .to(tooltips[1], { opacity: 1, y: 0, rotate: 3, duration: 0.3 })
-
+      .to(mobCircles[3], { opacity: 1, duration: 0.1 })
       .fromTo(
         mobLines[2],
         { drawSVG: "0%" },
         { drawSVG: "100%", duration: 0.3 }
       )
-      .to(mobCircles[2], { opacity: 1, duration: 0.1 })
+      .to(mobCircles[4], { opacity: 1, duration: 0.1 })
       .to(tooltips[2], { opacity: 1, y: 0, rotate: -3, duration: 0.3 })
 
-      .to(mobCircles[3], { opacity: 1, duration: 0.1 })
+      .to(mobCircles[5], { opacity: 1, duration: 0.1 })
       .fromTo(
         mobLines[3],
         { drawSVG: "100% 100%" },
