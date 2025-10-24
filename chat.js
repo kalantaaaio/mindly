@@ -175,7 +175,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Перевіряємо, чи наступне повідомлення від того ж автора
         const nextMessage = this.messages[index + 1];
-        const isLastInSequence = !nextMessage || nextMessage.characterId !== message.characterId;
+        const isLastInSequence =
+          !nextMessage || nextMessage.characterId !== message.characterId;
 
         setTimeout(() => {
           const messageElement = message.render(isLastInSequence);
@@ -224,7 +225,8 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       // Формуємо HTML для автора тільки якщо це останнє повідомлення в послідовності
-      const authorHTML = isLastInSequence ? `
+      const authorHTML = isLastInSequence
+        ? `
         <div class="journey_slide-text-athor">
           <img
             src="${character.photo}"
@@ -239,7 +241,8 @@ document.addEventListener("DOMContentLoaded", () => {
             <span class="text-14">${character.role}</span>
           </div>
         </div>
-      ` : '';
+      `
+        : "";
 
       messageDiv.innerHTML = `
         <div class="journey_slide-msg" style="background-color: ${character.color}">
@@ -396,7 +399,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         ScrollTrigger.create({
           trigger: swiperContainer,
-          start: "top 90%",
+          start: "top 50%",
           onEnter: () => {
             if (slide.classList.contains("swiper-slide-active")) {
               renderChatForSlide(slide.id);
