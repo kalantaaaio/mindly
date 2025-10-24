@@ -19,7 +19,7 @@ document.addEventListener("DOMContentLoaded", () => {
     "#pr-circle-1, #pr-circle-2, #pr-circle-3, #pr-circle-4, #pr-circle-5, #pr-circle-6"
   );
   const mobCircles = providersSection.querySelectorAll(
-    "#pr-circle-1-mob, #pr-circle-2-mob, #pr-circle-3-mob, #pr-circle-4-mob"
+    "#pr-circle-1-mob, #pr-circle-2-mob, #pr-circle-3-mob, #pr-circle-4-mob, #pr-circle-5-mob, #pr-circle-6-mob"
   );
 
   let mm = gsap.matchMedia();
