@@ -3,6 +3,9 @@ document.addEventListener("DOMContentLoaded", () => {
     slidesPerView: "auto",
     centeredSlides: true,
     slideToClickedSlide: true,
+    mousewheel: {
+      forceToAxis: true,
+    },
     breakpoints: {
       320: {
         spaceBetween: 8,
