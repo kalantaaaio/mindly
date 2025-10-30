@@ -5,6 +5,7 @@ document.addEventListener("DOMContentLoaded", () => {
     slideToClickedSlide: true,
     mousewheel: {
       forceToAxis: true,
+      sensitivity: 0.5,
     },
     breakpoints: {
       320: {
