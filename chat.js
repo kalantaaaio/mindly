@@ -3,6 +3,7 @@ document.addEventListener("DOMContentLoaded", () => {
     slidesPerView: "auto",
     centeredSlides: true,
     slideToClickedSlide: true,
+    allowTouchMove: true,
     breakpoints: {
       320: {
         spaceBetween: 8,
