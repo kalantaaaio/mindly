@@ -6,6 +6,8 @@ document.addEventListener("DOMContentLoaded", () => {
     mousewheel: {
       forceToAxis: true,
       sensitivity: 0.5,
+      thresholdDelta: 50, // поріг для спрацювання (у пікселях)
+      thresholdTime: 500,
     },
     breakpoints: {
       320: {
