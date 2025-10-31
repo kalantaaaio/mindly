@@ -9,6 +9,10 @@ document.addEventListener("DOMContentLoaded", () => {
       thresholdDelta: 100, // поріг для спрацювання (у пікселях)
       thresholdTime: 500,
     },
+    navigation: {
+      nextEl: ".s-button-next.is--journey",
+      prevEl: ".s-button-prev.is--journey",
+    },
     breakpoints: {
       320: {
         spaceBetween: 8,
