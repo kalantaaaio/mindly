@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", () => {
       forceToAxis: true,
       sensitivity: 0.5,
       thresholdDelta: 25, // поріг для спрацювання (у пікселях)
-      thresholdTime: 500,
+      thresholdTime: 300,
     },
     navigation: {
       nextEl: ".s-button-next.is--journey",
