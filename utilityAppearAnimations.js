@@ -273,4 +273,6 @@ document.addEventListener("DOMContentLoaded", () => {
     ".swiper-slide.is-voice-main"
   );
   cardsStaggerAppear(".faq_items", ".faq_item");
+  cardsStaggerAppear(".ways_contain", ".ways_item");
+  cardsStaggerAppear(".platform_contain", ".platform_item");
 });
