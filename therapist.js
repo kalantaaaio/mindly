@@ -126,16 +126,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
   firstTooltipTl.to(bell, {
     rotate: -8,
-    duration: 1,
+    duration: 0.8,
     yoyo: true,
     repeat: -1,
   });
   firstTooltipTl.to(
     cardTooltipOne,
-    { xPercent: 0, duration: 0.3, ease: "power4.out" },
+    { xPercent: 0, duration: 0.2, ease: "power4.out" },
     0.5
   );
-  firstTooltipTl.to(tooltipOneText, { opacity: 1, y: 0, duration: 0.3 }, 1);
+  firstTooltipTl.to(tooltipOneText, { opacity: 1, y: 0, duration: 0.2 }, 0.9);
 
   ScrollTrigger.create({
     trigger: cardTooltipOne,
