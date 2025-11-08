@@ -130,7 +130,11 @@ document.addEventListener("DOMContentLoaded", () => {
     yoyo: true,
     repeat: -1,
   });
-  firstTooltipTl.to(cardTooltipOne, { xPercent: 0, duration: 0.5 }, 0.5);
+  firstTooltipTl.to(
+    cardTooltipOne,
+    { xPercent: 0, duration: 0.3, ease: "power4.out" },
+    0.5
+  );
   firstTooltipTl.to(tooltipOneText, { opacity: 1, y: 0, duration: 0.3 }, 1);
 
   ScrollTrigger.create({
