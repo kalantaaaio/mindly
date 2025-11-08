@@ -132,7 +132,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
   firstTooltipTl.to(
     cardTooltipOne,
-    { xPercent: 0, duration: 0.2, ease: "power4.out" },
+    { xPercent: 0, duration: 0.4, ease: "power4.out" },
     0.5
   );
   firstTooltipTl.to(tooltipOneText, { opacity: 1, y: 0, duration: 0.2 }, 0.9);
