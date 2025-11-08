@@ -206,6 +206,9 @@ document.addEventListener("DOMContentLoaded", () => {
   function lineAppear(line) {
     const lineApps = document.querySelectorAll(line);
 
+    // Перевірка на наявність елементів
+    if (!lineApps || lineApps.length === 0) return;
+
     lineApps.forEach((lineApp) => {
       let mm = gsap.matchMedia();
 
