@@ -12,6 +12,7 @@ document.addEventListener("DOMContentLoaded", () => {
     ".therapists_statistics-item, .therapists_statistics-devider, .hero-therapist-link"
   );
   console.log(bottom);
+  console.log("asdfasdfassdsdas");
   const splitText = SplitText.create(mainTitle, {
     type: "lines",
     mask: "lines",
