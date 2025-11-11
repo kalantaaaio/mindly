@@ -11,6 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const bottom = document.querySelectorAll(
     ".therapists_statistics-item, .therapists_statistics-devider, .hero-therapist-link"
   );
+  console.log(bottom);
   const splitText = SplitText.create(mainTitle, {
     type: "lines",
     mask: "lines",
