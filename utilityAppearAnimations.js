@@ -266,6 +266,7 @@ document.addEventListener("DOMContentLoaded", () => {
   lineAppear(".swiper.is--marquee");
   lineAppear(".swiper.is--rating");
   lineAppear(".cta_contain");
+  lineAppear(".joining_contain");
 
   cardsStaggerAppear(".swiper-wrapper.blog_contain", ".swiper-slide.blog_item");
   cardsStaggerAppear(
