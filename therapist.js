@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
     ".therapists_statistics-item"
   );
   const bottom = document.querySelectorAll(
-    ".therapists_statistics-item, .therapists_statistics-devider, .hero-therepist-link"
+    ".therapists_statistics-item, .therapists_statistics-devider, .hero-therapist-link"
   );
   const splitText = SplitText.create(mainTitle, {
     type: "lines",
