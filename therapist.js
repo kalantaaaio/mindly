@@ -401,11 +401,90 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   //item-5
+  gsap.set(".joining_item-visuals-5_icon", { opacity: 0, scale: 0.8 });
+  gsap.set(".joining_item-visual-5", { scale: 0.8, yPercent: -16 });
+  gsap.set(".joining_item-visual-5_text", {
+    opacity: 0,
+    scale: 0.8,
+    xPercent: 20,
+  });
+
   gsap.to(".joining_item-visual-5_circle", {
     backgroundColor: "#02B286",
     duration: 0.3,
     repeat: -1,
     yoyo: true,
-    repeatDelay: 0.5, // затримка між повтореннями
+    repeatDelay: 0.5,
   });
+  // gsap.to(".joining_item-visual-5", {
+  //   scale: 1,
+  //   yPercent: 0,
+  //   duration: 1,
+  //   repeat: -1,
+  //   yoyo: true,
+  //   repeatDelay: 2,
+  // });
+  // gsap.to(".joining_item-visuals-5_icon", {
+  //   opacity: 1,
+  //   duration: 0.3,
+  //   repeat: -1,
+  //   yoyo: true,
+  //   repeatDelay: 3,
+  //   delay: 2,
+  // });
+  // gsap.to(".joining_item-visual-5_text", {
+  //   opacity: 1,
+  //   scale: 1,
+  //   xPercent: 0,
+  //   duration: 0.3,
+  //   repeat: -1,
+  //   yoyo: true,
+  //   repeatDelay: 3,
+  //   delay: 2.2,
+  // });
+
+  let lastCardTL = gsap.timeline({ repeat: -1 });
+
+  lastCardTL.to(".joining_item-visual-5", {
+    scale: 1,
+    yPercent: 0,
+    duration: 1.5,
+  });
+
+  lastCardTL.to(".joining_item-visuals-5_icon", {
+    opacity: 1,
+    scale: 1,
+    duration: 0.3,
+  });
+  lastCardTL.to(".joining_item-visual-5_text", {
+    opacity: 1,
+    scale: 1,
+    xPercent: 0,
+    duration: 0.3,
+  });
+  lastCardTL.to(
+    ".joining_item-visuals-5_icon",
+    { opacity: 0, duration: 0.3 },
+    "+=1.5"
+  );
+  lastCardTL.to(
+    ".joining_item-visual-5_text",
+    {
+      opacity: 0,
+      scale: 0.8,
+      xPercent: 20,
+      duration: 0.3,
+    },
+    "<"
+  );
+
+  lastCardTL.to(
+    ".joining_item-visual-5",
+    {
+      scale: 0.8,
+      yPercent: -16,
+      duration: 1.5,
+    },
+    "+=0.3"
+  );
 });
