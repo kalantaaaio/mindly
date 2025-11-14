@@ -626,7 +626,7 @@ document.addEventListener("DOMContentLoaded", () => {
     let lastCardTL = gsap.timeline({ repeat: -1 });
 
     lastCardTL.to(".joining_item-visual-5", {
-      scale: 0.9,
+      scale: 0.85,
       yPercent: 0,
       duration: 1.5,
     });
