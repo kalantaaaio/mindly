@@ -104,79 +104,174 @@ document.addEventListener("DOMContentLoaded", () => {
   // Створюємо об'єкт для анімації
   const counter = { value: 0 };
 
-  gsap.set(cardOnePar, { opacity: 0, y: 20 });
-  gsap.set(cardPhone, { opacity: 0, y: 100 });
-  gsap.set(cardTooltipOne, { xPercent: 40 });
-  gsap.set(tooltipOneText, { opacity: 0, y: 10 });
-  gsap.set(bell, { rotate: 8 });
-  gsap.set(starRatingTwo, {
-    clipPath: "polygon(0% 0%, 100% 0, 100% 100%, 0% 100%)",
-  });
-  let firstCardTl = gsap.timeline({ paused: true });
+  let mm = gsap.matchMedia();
 
-  firstCardTl.to(cardOnePar, { opacity: 1, y: 0, duration: 0.3 });
-  firstCardTl.to(cardPhone, { opacity: 1, y: 0, duration: 0.7 }, 0);
+  // Десктоп і планшет (min-width: 480px)
+  mm.add("(min-width: 480px)", () => {
+    gsap.set(cardOnePar, { opacity: 0, y: 20 });
+    gsap.set(cardPhone, { opacity: 0, y: 100 });
+    gsap.set(cardTooltipOne, { xPercent: 40 });
+    gsap.set(tooltipOneText, { opacity: 0, y: 10 });
+    gsap.set(bell, { rotate: 8 });
+    gsap.set(starRatingTwo, {
+      clipPath: "polygon(0% 0%, 100% 0, 100% 100%, 0% 100%)",
+    });
 
-  ScrollTrigger.create({
-    trigger: cardOne,
-    start: "top 70%",
-    onEnter: () => {
-      firstCardTl.play();
-    },
-  });
+    let firstCardTl = gsap.timeline({ paused: true });
 
-  let firstTooltipTl = gsap.timeline({ paused: true });
+    firstCardTl.to(cardOnePar, { opacity: 1, y: 0, duration: 0.3 });
+    firstCardTl.to(cardPhone, { opacity: 1, y: 0, duration: 0.7 }, 0);
 
-  firstTooltipTl.to(bell, {
-    rotate: -8,
-    duration: 0.8,
-    yoyo: true,
-    repeat: -1,
-  });
-  firstTooltipTl.to(
-    cardTooltipOne,
-    { xPercent: 0, duration: 0.4, ease: "power4.out" },
-    0.5
-  );
-  firstTooltipTl.to(tooltipOneText, { opacity: 1, y: 0, duration: 0.2 }, 0.9);
-
-  ScrollTrigger.create({
-    trigger: cardTooltipOne,
-    start: "top 60%",
-
-    onEnter: () => {
-      firstTooltipTl.play();
-    },
-  });
-
-  let secondTooltipTl = gsap.timeline({ paused: true });
-
-  secondTooltipTl.to(starRatingTwo, {
-    clipPath: "polygon(100% 0%, 100% 0, 100% 100%, 100% 100%)",
-    duration: 1.5,
-    ease: "none",
-  });
-  secondTooltipTl.to(
-    counter,
-    {
-      value: targetNum,
-      duration: 1.5,
-      ease: "power1.out",
-      onUpdate: function () {
-        const formattedNum = counter.value.toFixed(1);
-        starNumber.textContent = formattedNum;
+    ScrollTrigger.create({
+      trigger: cardOne,
+      start: "top 70%",
+      onEnter: () => {
+        firstCardTl.play();
       },
-    },
-    0
-  );
+    });
 
-  ScrollTrigger.create({
-    trigger: cardTooltipTwo,
-    start: "top 70%",
-    markers: true,
-    onEnter: () => {
-      secondTooltipTl.play();
-    },
+    let firstTooltipTl = gsap.timeline({ paused: true });
+
+    firstTooltipTl.to(bell, {
+      rotate: -8,
+      duration: 0.8,
+      yoyo: true,
+      repeat: -1,
+    });
+    firstTooltipTl.to(
+      cardTooltipOne,
+      { xPercent: 0, duration: 0.4, ease: "power4.out" },
+      0.5
+    );
+    firstTooltipTl.to(tooltipOneText, { opacity: 1, y: 0, duration: 0.2 }, 0.9);
+
+    ScrollTrigger.create({
+      trigger: cardTooltipOne,
+      start: "top 60%",
+      onEnter: () => {
+        firstTooltipTl.play();
+      },
+    });
+
+    let secondTooltipTl = gsap.timeline({ paused: true });
+
+    secondTooltipTl.to(starRatingTwo, {
+      clipPath: "polygon(100% 0%, 100% 0, 100% 100%, 100% 100%)",
+      duration: 1.5,
+      ease: "none",
+    });
+    secondTooltipTl.to(
+      counter,
+      {
+        value: targetNum,
+        duration: 1.5,
+        ease: "power1.out",
+        onUpdate: function () {
+          const formattedNum = counter.value.toFixed(1);
+          starNumber.textContent = formattedNum;
+        },
+      },
+      0
+    );
+
+    ScrollTrigger.create({
+      trigger: cardTooltipTwo,
+      start: "top 70%",
+      onEnter: () => {
+        secondTooltipTl.play();
+      },
+    });
+
+    return () => {
+      // Очищення при зміні breakpoint
+      firstCardTl.kill();
+      firstTooltipTl.kill();
+      secondTooltipTl.kill();
+    };
+  });
+
+  // Мобільна версія (max-width: 479.98px)
+  mm.add("(max-width: 479.98px)", () => {
+    gsap.set(cardOnePar, { opacity: 0, y: 20 });
+    gsap.set(cardPhone, { opacity: 0, y: 100 });
+    gsap.set(cardTooltipOne, { yPercent: 60, scale: 0.8 }); // Змінено на yPercent
+    gsap.set(tooltipOneText, { opacity: 0, y: 10 });
+    gsap.set(bell, { rotate: 8 });
+    gsap.set(starRatingTwo, {
+      clipPath: "polygon(0% 0%, 100% 0, 100% 100%, 0% 100%)",
+    });
+
+    let firstCardTl = gsap.timeline({ paused: true });
+
+    firstCardTl.to(cardOnePar, { opacity: 1, y: 0, duration: 0.3 });
+    firstCardTl.to(cardPhone, { opacity: 1, y: 0, duration: 0.7 }, 0);
+
+    ScrollTrigger.create({
+      trigger: cardOne,
+      start: "top 70%",
+      onEnter: () => {
+        firstCardTl.play();
+      },
+    });
+
+    let firstTooltipTl = gsap.timeline({ paused: true });
+
+    firstTooltipTl.to(bell, {
+      rotate: -8,
+      duration: 0.8,
+      yoyo: true,
+      repeat: -1,
+    });
+    firstTooltipTl.to(
+      cardTooltipOne,
+      { yPercent: 0, scale: 1, duration: 0.4, ease: "power4.out" }, // Змінено на yPercent
+      0.5
+    );
+    firstTooltipTl.to(tooltipOneText, { opacity: 1, y: 0, duration: 0.2 }, 0.9);
+
+    ScrollTrigger.create({
+      trigger: cardTooltipOne,
+      start: "top 60%",
+      onEnter: () => {
+        firstTooltipTl.play();
+      },
+    });
+
+    let secondTooltipTl = gsap.timeline({ paused: true });
+
+    secondTooltipTl.to(starRatingTwo, {
+      clipPath: "polygon(100% 0%, 100% 0, 100% 100%, 100% 100%)",
+      duration: 1.5,
+      ease: "none",
+    });
+    secondTooltipTl.to(
+      counter,
+      {
+        value: targetNum,
+        duration: 1.5,
+        ease: "power1.out",
+        onUpdate: function () {
+          const formattedNum = counter.value.toFixed(1);
+          starNumber.textContent = formattedNum;
+        },
+      },
+      0
+    );
+
+    ScrollTrigger.create({
+      trigger: cardTooltipTwo,
+      start: "top 70%",
+      onEnter: () => {
+        secondTooltipTl.play();
+      },
+    });
+
+    return () => {
+      // Очищення при зміні breakpoint
+      firstCardTl.kill();
+      firstTooltipTl.kill();
+      secondTooltipTl.kill();
+    };
   });
 });
 
@@ -199,7 +294,6 @@ document.addEventListener("DOMContentLoaded", () => {
         return -(lineWidth - galleryWidth);
       }
 
-      // Створюємо timeline замість простого tween
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: gallery,
@@ -211,17 +305,15 @@ document.addEventListener("DOMContentLoaded", () => {
         },
       });
 
-      // Ділимо timeline на частини для кожного item
       const itemCount = items.length;
-      const duration = 3; // Загальна тривалість
-      const itemDuration = duration / itemCount; // Тривалість на кожен item
+      const duration = 3;
+      const itemDuration = duration / itemCount;
 
       items.forEach((item, index) => {
-        const position = index * itemDuration; // Позиція в timeline
+        const position = index * itemDuration;
         const smallLine = item.querySelector(".joining_item-line-active");
         const itemNum = item.querySelector(".joining_item-num");
 
-        // Анімація горизонтального скролу
         tl.to(
           line,
           {
@@ -232,7 +324,6 @@ document.addEventListener("DOMContentLoaded", () => {
           position
         );
 
-        // Анімація num для всіх елементів
         if (itemNum) {
           tl.to(
             itemNum,
@@ -246,7 +337,6 @@ document.addEventListener("DOMContentLoaded", () => {
           );
         }
 
-        // Анімація лінії для ВСІХ елементів (включаючи перший)
         if (smallLine) {
           tl.to(
             smallLine,
@@ -260,7 +350,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       });
     } else {
-      // Випадок без горизонтального скролу - послідовна анімація
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: gallery,
@@ -274,7 +363,6 @@ document.addEventListener("DOMContentLoaded", () => {
         const smallLine = item.querySelector(".joining_item-line-active");
         const itemNum = item.querySelector(".joining_item-num");
 
-        // Анімація num (0.2с)
         if (itemNum) {
           tl.to(itemNum, {
             backgroundColor: "#BFE0DB",
@@ -284,7 +372,6 @@ document.addEventListener("DOMContentLoaded", () => {
           });
         }
 
-        // Анімація лінії (0.5с) - одразу після num
         if (smallLine) {
           tl.to(
             smallLine,
@@ -294,10 +381,54 @@ document.addEventListener("DOMContentLoaded", () => {
               ease: "power2.out",
             },
             "-=0.1"
-          ); // Невелике перекриття для плавності
+          );
         }
       });
     }
+
+    return () => {
+      // ScrollTrigger автоматично очищується
+    };
+  });
+
+  // Мобільна версія (max-width: 991.98px)
+  mm.add("(max-width: 991.98px)", () => {
+    items.forEach((item) => {
+      const smallLine = item.querySelector(".joining_item-line-active");
+      const itemNum = item.querySelector(".joining_item-num");
+
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: item,
+          start: "top 70%",
+          end: "bottom 70%",
+          scrub: true, // Додано scrub
+        },
+      });
+
+      // Анімація num
+      if (itemNum) {
+        tl.to(itemNum, {
+          backgroundColor: "#BFE0DB",
+          color: "#029C75",
+          duration: 0.2,
+          ease: "power1.inOut",
+        });
+      }
+
+      // Анімація лінії з scaleY
+      if (smallLine) {
+        tl.to(
+          smallLine,
+          {
+            scaleY: 1,
+            duration: 0.5,
+            ease: "none", // Змінено на "none" для scrub
+          },
+          "-=0.1"
+        );
+      }
+    });
 
     return () => {
       // ScrollTrigger автоматично очищується
@@ -401,90 +532,148 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   //item-5
-  gsap.set(".joining_item-visuals-5_icon", { opacity: 0, scale: 0.8 });
-  gsap.set(".joining_item-visual-5", { scale: 0.8, yPercent: -16 });
-  gsap.set(".joining_item-visual-5_text", {
-    opacity: 0,
-    scale: 0.8,
-    xPercent: 20,
-  });
+  // Анімація для останньої картки (min-width: 480px)
+  let mmFive = gsap.matchMedia();
 
-  gsap.to(".joining_item-visual-5_circle", {
-    backgroundColor: "#02B286",
-    duration: 0.3,
-    repeat: -1,
-    yoyo: true,
-    repeatDelay: 0.5,
-  });
-  // gsap.to(".joining_item-visual-5", {
-  //   scale: 1,
-  //   yPercent: 0,
-  //   duration: 1,
-  //   repeat: -1,
-  //   yoyo: true,
-  //   repeatDelay: 2,
-  // });
-  // gsap.to(".joining_item-visuals-5_icon", {
-  //   opacity: 1,
-  //   duration: 0.3,
-  //   repeat: -1,
-  //   yoyo: true,
-  //   repeatDelay: 3,
-  //   delay: 2,
-  // });
-  // gsap.to(".joining_item-visual-5_text", {
-  //   opacity: 1,
-  //   scale: 1,
-  //   xPercent: 0,
-  //   duration: 0.3,
-  //   repeat: -1,
-  //   yoyo: true,
-  //   repeatDelay: 3,
-  //   delay: 2.2,
-  // });
-
-  let lastCardTL = gsap.timeline({ repeat: -1 });
-
-  lastCardTL.to(".joining_item-visual-5", {
-    scale: 1,
-    yPercent: 0,
-    duration: 1.5,
-  });
-
-  lastCardTL.to(".joining_item-visuals-5_icon", {
-    opacity: 1,
-    scale: 1,
-    duration: 0.3,
-  });
-  lastCardTL.to(".joining_item-visual-5_text", {
-    opacity: 1,
-    scale: 1,
-    xPercent: 0,
-    duration: 0.3,
-  });
-  lastCardTL.to(
-    ".joining_item-visuals-5_icon",
-    { opacity: 0, duration: 0.3 },
-    "+=1.5"
-  );
-  lastCardTL.to(
-    ".joining_item-visual-5_text",
-    {
+  mmFive.add("(min-width: 480px)", () => {
+    gsap.set(".joining_item-visuals-5_icon", { opacity: 0, scale: 0.8 });
+    gsap.set(".joining_item-visual-5", { scale: 0.8, yPercent: -16 });
+    gsap.set(".joining_item-visual-5_text", {
       opacity: 0,
       scale: 0.8,
       xPercent: 20,
-      duration: 0.3,
-    },
-    "<"
-  );
+    });
 
-  lastCardTL.to(
-    ".joining_item-visual-5",
-    {
-      scale: 0.8,
-      yPercent: -16,
+    gsap.to(".joining_item-visual-5_circle", {
+      backgroundColor: "#02B286",
+      duration: 0.3,
+      repeat: -1,
+      yoyo: true,
+      repeatDelay: 0.5,
+    });
+
+    let lastCardTL = gsap.timeline({ repeat: -1 });
+
+    lastCardTL.to(".joining_item-visual-5", {
+      scale: 1,
+      yPercent: 0,
       duration: 1.5,
-    },
-    "+=0.3"
-  );
+    });
+
+    lastCardTL.to(".joining_item-visuals-5_icon", {
+      opacity: 1,
+      scale: 1,
+      duration: 0.3,
+    });
+
+    lastCardTL.to(".joining_item-visual-5_text", {
+      opacity: 1,
+      scale: 1,
+      xPercent: 0,
+      duration: 0.3,
+    });
+
+    lastCardTL.to(
+      ".joining_item-visuals-5_icon",
+      { opacity: 0, duration: 0.3 },
+      "+=1.5"
+    );
+
+    lastCardTL.to(
+      ".joining_item-visual-5_text",
+      {
+        opacity: 0,
+        scale: 0.8,
+        xPercent: 20,
+        duration: 0.3,
+      },
+      "<"
+    );
+
+    lastCardTL.to(
+      ".joining_item-visual-5",
+      {
+        scale: 0.8,
+        yPercent: -16,
+        duration: 1.5,
+      },
+      "+=0.3"
+    );
+
+    return () => {
+      // Очищення анімацій при зміні breakpoint
+      lastCardTL.kill();
+    };
+  });
+
+  mmFive.add("(max-width: 479.98px)", () => {
+    gsap.set(".joining_item-visuals-5_icon", { opacity: 0, scale: 0.7 });
+    gsap.set(".joining_item-visual-5", { scale: 0.7, yPercent: -16 });
+    gsap.set(".joining_item-visual-5_text", {
+      opacity: 0,
+      scale: 0.8,
+      xPercent: 20,
+    });
+
+    gsap.to(".joining_item-visual-5_circle", {
+      backgroundColor: "#02B286",
+      duration: 0.3,
+      repeat: -1,
+      yoyo: true,
+      repeatDelay: 0.5,
+    });
+
+    let lastCardTL = gsap.timeline({ repeat: -1 });
+
+    lastCardTL.to(".joining_item-visual-5", {
+      scale: 0.9,
+      yPercent: 0,
+      duration: 1.5,
+    });
+
+    lastCardTL.to(".joining_item-visuals-5_icon", {
+      opacity: 1,
+      scale: 1,
+      duration: 0.3,
+    });
+
+    lastCardTL.to(".joining_item-visual-5_text", {
+      opacity: 1,
+      scale: 1,
+      xPercent: 0,
+      duration: 0.3,
+    });
+
+    lastCardTL.to(
+      ".joining_item-visuals-5_icon",
+      { opacity: 0, duration: 0.3 },
+      "+=1.5"
+    );
+
+    lastCardTL.to(
+      ".joining_item-visual-5_text",
+      {
+        opacity: 0,
+        scale: 0.8,
+        xPercent: 20,
+        duration: 0.3,
+      },
+      "<"
+    );
+
+    lastCardTL.to(
+      ".joining_item-visual-5",
+      {
+        scale: 0.7,
+        yPercent: -16,
+        duration: 1.5,
+      },
+      "+=0.3"
+    );
+
+    return () => {
+      // Очищення анімацій при зміні breakpoint
+      lastCardTL.kill();
+    };
+  });
 });
