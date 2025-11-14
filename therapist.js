@@ -447,6 +447,15 @@ document.addEventListener("DOMContentLoaded", () => {
     repeat: -1,
     repeatDelay: 2,
   });
+  gsap.to("#heart", {
+    scale: 1.1,
+    duration: 0.4,
+    ease: "power1.inOut",
+    yoyo: true,
+    repeat: -1,
+    repeatDelay: 0.2,
+  });
+
   //item-2
   const toolpits = document.querySelectorAll(".joining_item-visual-2_card");
   const duration = 0.5;
@@ -626,7 +635,7 @@ document.addEventListener("DOMContentLoaded", () => {
     let lastCardTL = gsap.timeline({ repeat: -1 });
 
     lastCardTL.to(".joining_item-visual-5", {
-      scale: 0.85,
+      scale: 0.9,
       yPercent: 0,
       duration: 1.5,
     });
