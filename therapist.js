@@ -276,7 +276,6 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 //join section
-//join section
 document.addEventListener("DOMContentLoaded", () => {
   const gallery = document.querySelector(".joining_container");
   const line = gallery.querySelector(".joining_contain");
@@ -508,6 +507,60 @@ document.addEventListener("DOMContentLoaded", () => {
   mainTl.to(tl, { duration: tl.duration(), ease: "none" });
 
   //item-3
+  gsap.set("#pathSegment1", { drawSVG: "0%" });
+  gsap.set("#pathSegment2", { drawSVG: "0% 0%" });
+  gsap.set("#pathSegment3", { drawSVG: "0% 0%" });
+  gsap.set("#pathSegment4", { drawSVG: "100% 100%" });
+  gsap.set(
+    ".joining_item-tooltip.is--1, .joining_item-tooltip.is--2, .joining_item-tooltip.is--3",
+    { opacity: 0, y: -5 }
+  );
+
+  gsap.set("#locationMarker1", { y: -5, x: 5, opacity: 0 });
+  gsap.set("#locationMarker2", { y: -3, x: -5, opacity: 0 });
+  gsap.set("#locationMarker3", { y: -3, x: 5, opacity: 0 });
+  gsap.set("#chat, #calendar, #wallet", { opacity: 0 });
+
+  let pathTl = gsap.timeline({ repeat: -1, repeatDelay: 2 });
+
+  pathTl.to("#pathSegment1", { drawSVG: "100%", duration: 0.5 });
+  pathTl.to("#chat", { opacity: 1, duration: 0.1 });
+  pathTl.to("#locationMarker1", { y: 0, x: 0, opacity: 1, duration: 0.2 });
+  pathTl.to(
+    ".joining_item-tooltip.is--1",
+    {
+      y: 0,
+      opacity: 1,
+      duration: 0.2,
+    },
+    ">"
+  );
+  pathTl.to("#pathSegment2", { drawSVG: "100%", duration: 0.5 }, ">");
+  pathTl.to("#calendar", { opacity: 1, duration: 0.1 });
+  pathTl.to("#locationMarker2", { y: 0, x: 0, opacity: 1, duration: 0.2 });
+  pathTl.to(
+    ".joining_item-tooltip.is--2",
+    {
+      y: 0,
+      opacity: 1,
+      duration: 0.2,
+    },
+    ">"
+  );
+  pathTl.to("#pathSegment3", { drawSVG: "100%", duration: 0.5 }, ">");
+  pathTl.to("#wallet", { opacity: 1, duration: 0.1 });
+  pathTl.to("#locationMarker3", { y: 0, x: 0, opacity: 1, duration: 0.2 });
+  pathTl.to(
+    ".joining_item-tooltip.is--3",
+    {
+      y: 0,
+      opacity: 1,
+      duration: 0.2,
+    },
+    ">"
+  );
+  pathTl.to("#pathSegment4", { drawSVG: "0% 100%", duration: 0.5 }, ">");
+
   //item-4
   gsap.set("#signature", {
     attr: {
