@@ -1,5 +1,3 @@
-console.log("hi");
-
 // loading-tl з clearProps для кнопок
 window.addEventListener("load", () => {
   const loadContainer = document.querySelector(".hero_container");
