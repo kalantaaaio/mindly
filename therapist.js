@@ -1,15 +1,13 @@
-console.log("sdfs");
-
 // loading-tl з clearProps для кнопок
-document.addEventListener("DOMContentLoaded", () => {
+window.addEventListener("load", () => {
   const loadContainer = document.querySelector(".hero_container");
   const buttons = loadContainer.querySelectorAll(".btn-main, .btn-secondary");
   const mainTitle = document.querySelector("#main-title");
   const statsticsItems = document.querySelectorAll(
-    ".therapists_statistics-item"
+    ".therapists_statistics-item",
   );
   const bottom = document.querySelectorAll(
-    ".therapists_statistics-item, .therapists_statistics-devider, .hero-therapist-link"
+    ".therapists_statistics-item, .therapists_statistics-devider, .hero-therapist-link",
   );
 
   const splitText = SplitText.create(mainTitle, {
@@ -19,68 +17,67 @@ document.addEventListener("DOMContentLoaded", () => {
     autoSplit: true,
   });
 
-  // Main timeline
-  const masterTl = gsap.timeline();
   // Початкові стани
   gsap.set(buttons, { opacity: 0, y: 20 });
   gsap.set(splitText.lines, { opacity: 0, yPercent: 100 });
   gsap.set(bottom, { opacity: 0, y: 20 });
-  // Show main title and split text animation
-  masterTl
-    .set(mainTitle, { opacity: 1 })
-    .to(splitText.lines, {
-      yPercent: 0,
-      opacity: 1,
-      duration: 1,
-      ease: "power4.out",
-      stagger: 0.15,
-    })
-    .to(
-      buttons,
-      {
+
+  requestAnimationFrame(() => {
+    const masterTl = gsap.timeline();
+
+    masterTl
+      .set(mainTitle, { opacity: 1 })
+      .to(splitText.lines, {
+        yPercent: 0,
         opacity: 1,
-        y: 0,
         duration: 1,
         ease: "power4.out",
-        stagger: 0.1,
-        onComplete: () => {
-          // Очищуємо всі GSAP inline стилі для кнопок
-          gsap.set(buttons, {
-            clearProps: "transform,opacity,y",
-            opacity: 1,
-          });
+        stagger: 0.15,
+      })
+      .to(
+        buttons,
+        {
+          opacity: 1,
+          y: 0,
+          duration: 1,
+          ease: "power4.out",
+          stagger: 0.1,
+          onComplete: () => {
+            gsap.set(buttons, {
+              clearProps: "transform,opacity,y",
+              opacity: 1,
+            });
 
-          // Додаємо клас для позначення завершення анімації (опціонально)
-          buttons.forEach((btn) => {
-            btn.classList.add("gsap-animation-complete");
-          });
+            buttons.forEach((btn) => {
+              btn.classList.add("gsap-animation-complete");
+            });
+          },
         },
-      },
-      "-=0.5"
-    );
-  gsap.to(bottom, {
-    opacity: 1,
-    y: 0,
-    duration: 0.5,
-    ease: "power4.out",
-    stagger: 0.2,
-  });
-  // Анімація лічильників у статистиці
-  statsticsItems.forEach((card) => {
-    const numEl = card.querySelector(".text-num");
-    const targetNum = parseInt(numEl.dataset.num);
+        "-=0.5",
+      );
+    gsap.to(bottom, {
+      opacity: 1,
+      y: 0,
+      duration: 0.5,
+      ease: "power4.out",
+      stagger: 0.2,
+    });
+    // Анімація лічильників у статистиці
+    statsticsItems.forEach((card) => {
+      const numEl = card.querySelector(".text-num");
+      const targetNum = parseInt(numEl.dataset.num);
 
-    // Створюємо об'єкт для анімації
-    const counter = { value: 0 };
+      const counter = { value: 0 };
 
-    gsap.to(counter, {
-      value: targetNum,
-      duration: 3,
-      ease: "none",
-      onUpdate: function () {
-        const formattedNum = Math.floor(counter.value).toLocaleString("en-US");
-        numEl.textContent = formattedNum;
-      },
+      gsap.to(counter, {
+        value: targetNum,
+        duration: 3,
+        ease: "none",
+        onUpdate: function () {
+          const formattedNum = Math.floor(counter.value).toLocaleString("en-US");
+          numEl.textContent = formattedNum;
+        },
+      });
     });
   });
 });
@@ -141,7 +138,7 @@ document.addEventListener("DOMContentLoaded", () => {
     firstTooltipTl.to(
       cardTooltipOne,
       { xPercent: 0, duration: 0.4, ease: "power4.out" },
-      0.5
+      0.5,
     );
     firstTooltipTl.to(tooltipOneText, { opacity: 1, y: 0, duration: 0.2 }, 0.9);
 
@@ -171,7 +168,7 @@ document.addEventListener("DOMContentLoaded", () => {
           starNumber.textContent = formattedNum;
         },
       },
-      0
+      0,
     );
 
     ScrollTrigger.create({
@@ -225,7 +222,7 @@ document.addEventListener("DOMContentLoaded", () => {
     firstTooltipTl.to(
       cardTooltipOne,
       { yPercent: 0, scale: 1, duration: 0.4, ease: "power4.out" }, // Змінено на yPercent
-      0.5
+      0.5,
     );
     firstTooltipTl.to(tooltipOneText, { opacity: 1, y: 0, duration: 0.2 }, 0.9);
 
@@ -255,7 +252,7 @@ document.addEventListener("DOMContentLoaded", () => {
           starNumber.textContent = formattedNum;
         },
       },
-      0
+      0,
     );
 
     ScrollTrigger.create({
@@ -320,7 +317,7 @@ document.addEventListener("DOMContentLoaded", () => {
             duration: itemDuration,
             ease: "none",
           },
-          position
+          position,
         );
 
         if (itemNum) {
@@ -332,7 +329,7 @@ document.addEventListener("DOMContentLoaded", () => {
               duration: 0.1,
               ease: "power1.inOut",
             },
-            position
+            position,
           );
         }
 
@@ -344,7 +341,7 @@ document.addEventListener("DOMContentLoaded", () => {
               duration: itemDuration,
               ease: "none",
             },
-            position
+            position,
           );
         }
       });
@@ -379,7 +376,7 @@ document.addEventListener("DOMContentLoaded", () => {
               duration: 0.5,
               ease: "power2.out",
             },
-            "-=0.1"
+            "-=0.1",
           );
         }
       });
@@ -424,7 +421,7 @@ document.addEventListener("DOMContentLoaded", () => {
             duration: 0.5,
             ease: "none", // Змінено на "none" для scrub
           },
-          "-=0.1"
+          "-=0.1",
         );
       }
     });
@@ -484,14 +481,14 @@ document.addEventListener("DOMContentLoaded", () => {
         delay: 0,
         zIndex: zIndex,
       },
-      i * dd
+      i * dd,
     );
     tl.to(item, { scale: 1.3, yPercent: -50, "--card-opacity": 0.2 }, "<" + dd);
     tl.to(item, { scale: 1.6, yPercent: -100, "--card-opacity": 0 }, "<" + dd);
     tl.to(
       item,
       { scale: 1.3, yPercent: -150, opacity: 0, filter: "blur(0.5rem)" },
-      "<" + dd
+      "<" + dd,
     );
   }
 
@@ -513,7 +510,7 @@ document.addEventListener("DOMContentLoaded", () => {
   gsap.set("#pathSegment4", { drawSVG: "100% 100%" });
   gsap.set(
     ".joining_item-tooltip.is--1, .joining_item-tooltip.is--2, .joining_item-tooltip.is--3",
-    { opacity: 0, y: -5 }
+    { opacity: 0, y: -5 },
   );
 
   gsap.set("#locationMarker1", { y: -5, x: 5, opacity: 0 });
@@ -533,7 +530,7 @@ document.addEventListener("DOMContentLoaded", () => {
       opacity: 1,
       duration: 0.2,
     },
-    ">"
+    ">",
   );
   pathTl.to("#pathSegment2", { drawSVG: "100%", duration: 0.5 }, ">");
   pathTl.to("#calendar", { opacity: 1, duration: 0.1 });
@@ -545,7 +542,7 @@ document.addEventListener("DOMContentLoaded", () => {
       opacity: 1,
       duration: 0.2,
     },
-    ">"
+    ">",
   );
   pathTl.to("#pathSegment3", { drawSVG: "100%", duration: 0.5 }, ">");
   pathTl.to("#wallet", { opacity: 1, duration: 0.1 });
@@ -557,7 +554,7 @@ document.addEventListener("DOMContentLoaded", () => {
       opacity: 1,
       duration: 0.2,
     },
-    ">"
+    ">",
   );
   pathTl.to("#pathSegment4", { drawSVG: "0% 100%", duration: 0.5 }, ">");
 
@@ -638,7 +635,7 @@ document.addEventListener("DOMContentLoaded", () => {
     lastCardTL.to(
       ".joining_item-visuals-5_icon",
       { opacity: 0, duration: 0.3 },
-      "+=1.5"
+      "+=1.5",
     );
 
     lastCardTL.to(
@@ -649,7 +646,7 @@ document.addEventListener("DOMContentLoaded", () => {
         xPercent: 20,
         duration: 0.3,
       },
-      "<"
+      "<",
     );
 
     lastCardTL.to(
@@ -659,7 +656,7 @@ document.addEventListener("DOMContentLoaded", () => {
         yPercent: -16,
         duration: 1.5,
       },
-      "+=0.3"
+      "+=0.3",
     );
 
     return () => {
@@ -709,7 +706,7 @@ document.addEventListener("DOMContentLoaded", () => {
     lastCardTL.to(
       ".joining_item-visuals-5_icon",
       { opacity: 0, duration: 0.3 },
-      "+=1.5"
+      "+=1.5",
     );
 
     lastCardTL.to(
@@ -720,7 +717,7 @@ document.addEventListener("DOMContentLoaded", () => {
         xPercent: 20,
         duration: 0.3,
       },
-      "<"
+      "<",
     );
 
     lastCardTL.to(
@@ -730,7 +727,7 @@ document.addEventListener("DOMContentLoaded", () => {
         yPercent: -16,
         duration: 1.5,
       },
-      "+=0.3"
+      "+=0.3",
     );
 
     return () => {
