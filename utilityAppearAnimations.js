@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
   // ACCESSIBILITY: Перевірка prefers-reduced-motion
   const prefersReducedMotion = window.matchMedia(
-    "(prefers-reduced-motion: reduce)"
+    "(prefers-reduced-motion: reduce)",
   ).matches;
 
   if (prefersReducedMotion) {
@@ -55,15 +55,15 @@ function createSplitAnimation(element, config) {
     config.animateTarget === "chars"
       ? split.chars
       : config.animateTarget === "words"
-      ? split.words
-      : config.animateTarget === "lines"
-      ? split.lines
-      : split[
-          config.type
-            .replace(",", "")
-            .replace("words", "")
-            .replace("lines", "") || "chars"
-        ];
+        ? split.words
+        : config.animateTarget === "lines"
+          ? split.lines
+          : split[
+              config.type
+                .replace(",", "")
+                .replace("words", "")
+                .replace("lines", "") || "chars"
+            ];
 
   gsap.set(targets, config.from);
   gsap.to(targets, {
@@ -267,12 +267,15 @@ document.addEventListener("DOMContentLoaded", () => {
   lineAppear(".swiper.is--rating");
   lineAppear(".cta_contain");
   lineAppear(".joining_contain");
+  lineAppear(".promo_meet-card");
+  lineAppear(".promo_meet-row");
 
   cardsStaggerAppear(".swiper-wrapper.blog_contain", ".swiper-slide.blog_item");
   cardsStaggerAppear(
     ".swiper-wrapper.is-voice-main",
-    ".swiper-slide.is-voice-main"
+    ".swiper-slide.is-voice-main",
   );
   cardsStaggerAppear(".faq_items", ".faq_item");
   cardsStaggerAppear(".platform_contain", ".platform_item");
+  cardsStaggerAppear(".promo_meet-numbers", ".promo_meet-number");
 });
