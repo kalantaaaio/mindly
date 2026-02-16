@@ -268,7 +268,6 @@ document.addEventListener("DOMContentLoaded", () => {
   lineAppear(".cta_contain");
   lineAppear(".joining_contain");
   lineAppear(".promo_meet-card");
-  lineAppear(".promo_meet-row");
 
   cardsStaggerAppear(".swiper-wrapper.blog_contain", ".swiper-slide.blog_item");
   cardsStaggerAppear(
@@ -278,4 +277,5 @@ document.addEventListener("DOMContentLoaded", () => {
   cardsStaggerAppear(".faq_items", ".faq_item");
   cardsStaggerAppear(".platform_contain", ".platform_item");
   cardsStaggerAppear(".promo_meet-numbers", ".promo_meet-number");
+  cardsStaggerAppear("promo_meet-info", ".promo_meet-item, .btn-main");
 });

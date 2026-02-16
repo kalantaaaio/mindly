@@ -1,3 +1,5 @@
+console.log("hi");
+
 // promo section number animation
 document.addEventListener("DOMContentLoaded", () => {
   const numbers = document.querySelectorAll(".promo_meet-number");
