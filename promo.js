@@ -3,8 +3,15 @@ window.addEventListener("load", () => {
   const loadContainer = document.querySelector(".hero_container");
   const buttons = loadContainer.querySelectorAll(".btn-main");
   const mainTitle = document.querySelector("#main-title");
-
+  const mainPar = document.querySelector("#main-p");
   const splitText = SplitText.create(mainTitle, {
+    type: "lines",
+    mask: "lines",
+    linesClass: "split-line",
+    autoSplit: true,
+  });
+
+  const splitPar = SplitText.create(mainPar, {
     type: "lines",
     mask: "lines",
     linesClass: "split-line",
@@ -14,6 +21,7 @@ window.addEventListener("load", () => {
   // Початкові стани
   gsap.set(buttons, { opacity: 0, y: 20 });
   gsap.set(splitText.lines, { opacity: 0, yPercent: 100 });
+  gsap.set(splitPar.lines, { opacity: 0, yPercent: 100 });
 
   requestAnimationFrame(() => {
     const masterTl = gsap.timeline();
@@ -27,6 +35,18 @@ window.addEventListener("load", () => {
         ease: "power4.out",
         stagger: 0.15,
       })
+      .set(mainPar, { opacity: 1 })
+      .to(
+        splitPar.lines,
+        {
+          yPercent: 0,
+          opacity: 1,
+          duration: 1,
+          ease: "power4.out",
+          stagger: 0.15,
+        },
+        "-=0.5",
+      )
       .to(
         buttons,
         {
@@ -99,8 +119,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: gallery,
-        start: "top center",
-        end: "bottom center",
+        start: "top 30%",
+        end: "bottom 30%",
         toggleActions: "play none none reverse",
       },
     });
@@ -194,7 +214,7 @@ document.addEventListener("DOMContentLoaded", () => {
         gsap.set(city, { rotateZ: 15, opacity: 0 });
       }
       gsap.set(avatar, { y: -20, opacity: 0 });
-      const startTime = i * 0.3;
+      const startTime = i * 0.15;
 
       // Анімація аватару
       tl.to(
@@ -202,7 +222,7 @@ document.addEventListener("DOMContentLoaded", () => {
         {
           y: 0,
           opacity: 1,
-          duration: 0.2,
+          duration: 0.15,
         },
         startTime,
       );
@@ -212,16 +232,16 @@ document.addEventListener("DOMContentLoaded", () => {
         {
           opacity: 1,
           rotateZ: 0,
-          duration: 0.4,
+          duration: 0.25,
         },
-        startTime + 0.1,
+        startTime + 0.05,
       );
     });
 
     // Створюємо ScrollTrigger
     ScrollTrigger.create({
       trigger: ".professionals_contain-text",
-      start: "top 60%",
+      start: "top 70%",
       onEnter: () => {
         tl.play();
       },
@@ -255,14 +275,14 @@ document.addEventListener("DOMContentLoaded", () => {
       }
       gsap.set(avatar, { y: -20, opacity: 0 });
 
-      const startTime = step * 0.3;
+      const startTime = step * 0.15;
 
       tl.to(
         avatar,
         {
           y: 0,
           opacity: 1,
-          duration: 0.2,
+          duration: 0.15,
         },
         startTime,
       );
@@ -272,9 +292,9 @@ document.addEventListener("DOMContentLoaded", () => {
         {
           opacity: 1,
           rotateZ: angles[step],
-          duration: 0.4,
+          duration: 0.25,
         },
-        startTime + 0.1,
+        startTime + 0.05,
       );
     });
 
