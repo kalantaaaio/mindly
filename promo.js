@@ -99,10 +99,10 @@ document.addEventListener("DOMContentLoaded", () => {
       },
       onUpdate() {
         const snapped = snap(counter.value);
-        numEl.textContent = snapped.toLocaleString("en-US");
+        numEl.textContent = snapped.toLocaleString("en-US").replace(/,/g, " ");
       },
       onComplete() {
-        numEl.textContent = targetValue.toLocaleString("en-US");
+        numEl.textContent = targetValue.toLocaleString("en-US").replace(/,/g, " ");
       },
     });
   });
