@@ -632,3 +632,27 @@ document.addEventListener("DOMContentLoaded", () => {
     },
   });
 });
+
+document.addEventListener("DOMContentLoaded", () => {
+  const sticker = document.querySelector(".providers_sticker");
+  const block = document.querySelector(".providers_contain-wrp");
+  let stickerAppearTl = gsap.timeline({ paused: true });
+  stickerAppearTl.from(
+    sticker,
+    {
+      opacity: 0,
+      scale: 0.5,
+      yPercent: -100,
+      xPercent: 80,
+      duration: 0.5,
+    },
+    0.25,
+  );
+  ScrollTrigger.create({
+    trigger: block,
+    start: "top 70%",
+    onEnter: () => {
+      stickerAppearTl.play();
+    },
+  });
+});
