@@ -633,6 +633,19 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
+// hover emulation for .btn-main
+document.addEventListener("DOMContentLoaded", () => {
+  const buttons = document.querySelectorAll(".btn-main");
+  if (!buttons.length) return;
+
+  setInterval(() => {
+    buttons.forEach((btn) => {
+      btn.classList.add("is-hovered");
+      setTimeout(() => btn.classList.remove("is-hovered"), 300);
+    });
+  }, 3000);
+});
+
 document.addEventListener("DOMContentLoaded", () => {
   const sticker = document.querySelector(".providers_sticker");
   const block = document.querySelector(".providers_contain-wrp");
