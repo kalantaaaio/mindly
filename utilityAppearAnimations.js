@@ -278,4 +278,5 @@ document.addEventListener("DOMContentLoaded", () => {
   cardsStaggerAppear(".platform_contain", ".platform_item");
   cardsStaggerAppear(".promo_meet-numbers", ".promo_meet-number");
   cardsStaggerAppear("promo_meet-info", ".promo_meet-item, .btn-main");
+  cardsStaggerAppear(".question_grid", ".question_card");
 });
