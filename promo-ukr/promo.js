@@ -45,7 +45,7 @@ window.addEventListener("load", () => {
           ease: "power4.out",
           stagger: 0.15,
         },
-        "-=0.5",
+        "-=1",
       )
       .to(
         buttons,
@@ -102,7 +102,9 @@ document.addEventListener("DOMContentLoaded", () => {
         numEl.textContent = snapped.toLocaleString("en-US").replace(/,/g, " ");
       },
       onComplete() {
-        numEl.textContent = targetValue.toLocaleString("en-US").replace(/,/g, " ");
+        numEl.textContent = targetValue
+          .toLocaleString("en-US")
+          .replace(/,/g, " ");
       },
     });
   });
