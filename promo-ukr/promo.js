@@ -45,7 +45,7 @@ window.addEventListener("load", () => {
           ease: "power4.out",
           stagger: 0.15,
         },
-        "-=1",
+        "-=0.75",
       )
       .to(
         buttons,
