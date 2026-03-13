@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   const buttonElements = document.querySelectorAll(".btn-main");
   const namesElements = document.querySelectorAll(".promo-name");
-  const discpuntElements = document.querySelectorAll(".discount-num");
+  const discountElements = document.querySelectorAll(".discount-num");
 
   const getData = async () => {
     const url = `${BASE_URL}${clientData}`;
@@ -28,8 +28,11 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   const linkUrl = res.data.deepLink;
   const name = res.data.name;
-  const code = res.data.referral_code;
+  const discountNum = res.data.discount;
 
+  console.log(`btns : ${buttonElements}`);
+  console.log(`namesElements : ${namesElements}`);
+  console.log(`discountElements : ${discountElements}`);
   console.log(res);
 
   buttonElements.forEach((el) => {
@@ -39,7 +42,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     el.textContent = name;
   });
 
-  discpuntElements.forEach((el) => {
-    el.textContent = code;
+  discountElements.forEach((el) => {
+    el.textContent = discountNum;
   });
 });
