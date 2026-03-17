@@ -1,3 +1,106 @@
+(function () {
+  function getDeviceType() {
+    var ua = navigator.userAgent;
+    if (/iPhone|iPad|iPod/i.test(ua)) return "iOS";
+    if (/Android/i.test(ua)) return "Android";
+    return "Web";
+  }
+
+  var referralCode =
+    new URLSearchParams(window.location.search).get("code") || null;
+
+  var commonParams = {
+    locale: document.documentElement.lang || navigator.language || null,
+    device_type: getDeviceType(),
+    referral_code: referralCode,
+  };
+
+  // Page View
+  gtag("event", "ReferralLandingPageViewed", commonParams);
+
+  // Scroll 50%
+  var fired50 = false;
+  // Scroll 100%
+  var fired100 = false;
+
+  window.addEventListener("scroll", function () {
+    var scrolled =
+      ((window.scrollY + window.innerHeight) /
+        document.documentElement.scrollHeight) *
+      100;
+
+    if (!fired50 && scrolled >= 50) {
+      fired50 = true;
+      gtag("event", "ReferralLandingPageScroll50Percent", commonParams);
+    }
+
+    if (!fired100 && scrolled >= 100) {
+      fired100 = true;
+      gtag("event", "ReferralLandingPageScroll100Percent", commonParams);
+    }
+  });
+
+  // Get Discount Button Clicked
+  document.querySelectorAll(".btn-main").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      gtag(
+        "event",
+        "ReferralLandingPageGetDiscountButtonClicked",
+        Object.assign({}, commonParams, {
+          user_flow: btn.id || null,
+        }),
+      );
+    });
+  });
+})();
+
+document.addEventListener("DOMContentLoaded", async () => {
+  const BASE_URL =
+    "https://europe-west1-ihub-projects-developmen-af75f.cloudfunctions.net/v79Api";
+
+  const referralCode =
+    new URLSearchParams(window.location.search).get("code") || "";
+  const clientData = `/clientsApp/client/referrals/webflow/${referralCode}`;
+
+  const buttonElements = document.querySelectorAll(".btn-main");
+  const namesElements = document.querySelectorAll(".promo-name");
+  const discountElements = document.querySelectorAll(".discount-num");
+
+  const getData = async () => {
+    const url = `${BASE_URL}${clientData}`;
+    try {
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error(`Response status: ${response.status}`);
+      }
+
+      const result = await response.json();
+      return result;
+    } catch (error) {
+      console.error(error.message);
+    }
+  };
+  const res = await getData();
+
+  const linkUrl = res.data.deepLink;
+  const name = res.data.name;
+  const discountNum = res.data.discount;
+
+  buttonElements.forEach((el) => {
+    el.setAttribute("href", linkUrl);
+  });
+  namesElements.forEach((el) => {
+    el.textContent = name;
+  });
+
+  window._referralDataReady = true;
+  window.dispatchEvent(new CustomEvent("referralDataReady"));
+
+  discountElements.forEach((el) => {
+    el.textContent = discountNum;
+  });
+});
+
 // loading-tl з clearProps для кнопок
 window.addEventListener("load", () => {
   const loadContainer = document.querySelector(".hero_container");
@@ -11,9 +114,11 @@ window.addEventListener("load", () => {
     autoSplit: true,
   });
 
-  window.addEventListener("referralDataReady", () => {
+  if (window._referralDataReady) {
     splitText.split();
-  });
+  } else {
+    window.addEventListener("referralDataReady", () => splitText.split());
+  }
 
   const splitPar = SplitText.create(mainPar, {
     type: "lines",
