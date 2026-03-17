@@ -11,6 +11,10 @@ window.addEventListener("load", () => {
     autoSplit: true,
   });
 
+  window.addEventListener("referralDataReady", () => {
+    splitText.split();
+  });
+
   const splitPar = SplitText.create(mainPar, {
     type: "lines",
     mask: "lines",
