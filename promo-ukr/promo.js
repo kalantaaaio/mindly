@@ -93,38 +93,31 @@ document.addEventListener("DOMContentLoaded", async () => {
     el.textContent = name;
   });
 
-  window._referralDataReady = true;
-  window.dispatchEvent(new CustomEvent("referralDataReady"));
-
   discountElements.forEach((el) => {
     el.textContent = discountNum;
   });
+
+  window._referralDataReady = true;
+  if (window._pageLoaded) initHeroAnimation();
 });
 
 // loading-tl з clearProps для кнопок
-window.addEventListener("load", () => {
+function initHeroAnimation() {
   const loadContainer = document.querySelector(".hero_container");
   const buttons = loadContainer.querySelectorAll(".btn-main");
   const mainTitle = document.querySelector("#main-title");
   const mainPar = document.querySelector("#main-p");
+
   const splitText = SplitText.create(mainTitle, {
     type: "lines",
     mask: "lines",
     linesClass: "split-line",
-    autoSplit: true,
   });
-
-  if (window._referralDataReady) {
-    splitText.split();
-  } else {
-    window.addEventListener("referralDataReady", () => splitText.split());
-  }
 
   const splitPar = SplitText.create(mainPar, {
     type: "lines",
     mask: "lines",
     linesClass: "split-line",
-    autoSplit: true,
   });
 
   // Початкові стани
@@ -178,6 +171,11 @@ window.addEventListener("load", () => {
         "-=0.5",
       );
   });
+}
+
+window.addEventListener("load", () => {
+  window._pageLoaded = true;
+  if (window._referralDataReady) initHeroAnimation();
 });
 
 // promo section number animation
