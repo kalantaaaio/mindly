@@ -455,5 +455,3 @@ document.addEventListener("DOMContentLoaded", () => {
 
   drop(".faq_items", ".faq_item", ".drop-toggle", "open", 991);
 });
-
-console.log("test");
